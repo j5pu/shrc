@@ -45,7 +45,7 @@ source_files "${SHRC_PROFILE_D}"/??-*/*.sh
 
 # source: secrets
 #
-source_file "${SECRETS}"
+source_files "${SECRETS}"
 
 # source: homebrew profile.d
 #
