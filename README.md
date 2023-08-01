@@ -1,0 +1,2 @@
+# shrc
+shell rc
