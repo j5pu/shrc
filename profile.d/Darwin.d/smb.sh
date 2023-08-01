@@ -1,0 +1,16 @@
+# shellcheck shell=sh
+
+#######################################
+# enable smb macOS
+# Arguments:
+#  None
+#######################################
+enable_sharing() {
+  killall System\ Preferences
+  defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
+  sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
+  sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist
+  sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server.plist EnabledServices -array disk
+  test $# -eq 0 || sudo sharing -a "$@"
+}
+
