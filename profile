@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 
-set +x
+
 unset ENV
 
 export GIT="j5pu"
@@ -14,15 +14,18 @@ export SECRETS="/Users/${GIT}/secrets/secrets.sh"
 # Application configurations that can be configured with global variables and do not contain secrets.
 #
 export SHRC_CONFIG="${SHRC}/config"
-# shrc shell for commands hooks (bash or zsh)
+# SHRC packages directory
 #
-SHRC_HOOKS_SHELL="$(basename "${BASH:-${ZSH_NAME}}" | sed 's/^sh$/bash/')"; export SHRC_HOOKS_SHELL
+export SHRC_PACKAGES="${SHRC}/packages";
 # SHRC profile and system profile file
 #
 export SHRC_PROFILE="${SHRC}/profile";
 # SHRC profile compat directory
 #
 export SHRC_PROFILE_D="${SHRC}/profile.d";
+# SHRC generated libraries in  profile compat directory
+#
+export SHRC_PROFILE_D_GENERATED_D="${SHRC_PROFILE_D}/99-generated.d";
 
 cmd() { command -v "${1}" >/dev/null; }
 source_files() {
@@ -54,5 +57,3 @@ source_files "${SECRETS}"
 export_all_functions
 
 export ENV="${SHRC_PROFILE}"
-
-set +x

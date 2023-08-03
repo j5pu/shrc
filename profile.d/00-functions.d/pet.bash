@@ -1,12 +1,14 @@
 # shellcheck shell=bash
 
+[ "${PS1-}" ] || return 0
+
 #######################################
 # Register the previous command easily
 # https://github.com/knqyf263/pet#bash-prev-function
 # Arguments:
 #  None
 #######################################
-function prev() {
+prev() {
   local PREV
   PREV=$(history | tail -n2 | head -n1| sed 's/[0-9]*//' | xargs)
   sh -c "pet new $(printf %q "${PREV}")"
@@ -22,9 +24,12 @@ function prev() {
 # Arguments:
 #  None
 #######################################
-function pet-select() {
-  BUFFER=$(pet search --query "$READLINE_LINE")
-  READLINE_LINE=$BUFFER
-  READLINE_POINT=${#BUFFER}
+pet_select() {
+  local buffer
+
+  buffer=$(pet search --query "$READLINE_LINE")
+  READLINE_LINE=$buffer
+  READLINE_POINT=${#buffer}
 }
-bind -x '"\C-x\C-r": pet-select'
+
+bind -x '"\C-x\C-r": pet_select'

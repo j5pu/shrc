@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+#
+# macOS setenv for JetBrains applications configuration
+# Copyright 2023 j5pu
+
+set -eu
+
+#######################################
+# macOS setenv for JetBrains applications configuration
+# Arguments:
+#  None
+#######################################
+main() {
+  . /etc/profile
+
+  generate_jetbrains
+
+  . "${JETBRAINS_GENERATED?}"
+
+  for application in ${JETBRAINS_APPLICATIONS}; do
+    echo launchctl setenv "${application^^}_PROPERTIES" "$(eval echo \$"${application^^}_PROPERTIES")"
+    echo launchctl setenv "${application^^}_VM_OPTIONS" "$(eval echo \$"${application^^}_VM_OPTIONS")"
+  done
+}
+
+main "$@"
