@@ -205,6 +205,5 @@ wma() {
     -type f )
 }
 
-/usr/local/bin/jet-service
 
 ! test -f ~/media/.bashrc || . ~/media/.bashrc

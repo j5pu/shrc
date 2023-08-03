@@ -28,11 +28,7 @@ export SHRC_PROFILE_D="${SHRC}/profile.d";
 export SHRC_PROFILE_D_GENERATED_D="${SHRC_PROFILE_D}/99-generated.d";
 
 cmd() { command -v "${1}" >/dev/null; }
-source_files() {
-  for arg; do
-    ! test -f "${arg}" || . "${arg}"
-  done
- }
+source_files() { for arg; do ! test -f "${arg}" || . "${arg}"; done; }
 
 # source: posix (common to all shells)
 #
