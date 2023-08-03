@@ -1,5 +1,7 @@
 # shellcheck shell=sh
 
+# System-wide .profile for sh(1)
+#
 
 unset ENV
 
