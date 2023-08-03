@@ -16,6 +16,9 @@ export SECRETS="/Users/${GIT}/secrets/secrets.sh"
 # Application configurations that can be configured with global variables and do not contain secrets.
 #
 export SHRC_CONFIG="${SHRC}/config"
+# shrc shell for commands hooks (bash or zsh)
+#
+SHRC_HOOKS_SHELL="$(basename "${BASH:-${ZSH_NAME}}" | sed 's/^sh$/bash/')"; export SHRC_HOOKS_SHELL
 # SHRC packages directory
 #
 export SHRC_PACKAGES="${SHRC}/packages";
@@ -52,6 +55,6 @@ source_files "${SECRETS}"
 #
 ! test -d "${HOMEBREW_PREFIX}/etc/profile.d" || source_files "${HOMEBREW_PREFIX}/etc/profile.d"/*
 
-export_all_functions
+! cmd export_all_functions || export_all_functions
 
 export ENV="${SHRC_PROFILE}"
