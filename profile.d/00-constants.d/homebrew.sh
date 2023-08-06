@@ -1,9 +1,7 @@
 # shellcheck shell=sh
 
-! cmd brew || eval "$(brew shellenv)"
-
 export HOMEBREW_BAT=1
-export HOMEBREW_BUNDLE_FILE="${HOME}/bbin/Brewfile"
+export HOMEBREW_BUNDLE_FILE="${SHRC_PACKAGES?}/${UNAME}/${HOST}/Brewfile"
 # export HOMEBREW_CACHE="/Volumes/USB-2TB/Library/Caches/Homebrew"
 #  export HOMEBREW_CELLAR="${HOMEBREW_PREFIX}/Cellar"
 export HOMEBREW_CASK_OPTS="--appdir=/Applications --no-quarantine"
