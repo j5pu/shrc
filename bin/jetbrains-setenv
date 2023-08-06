@@ -1,27 +1,66 @@
 #!/usr/bin/env bash
 
-#
-# macOS setenv for JetBrains applications configuration
-# Copyright 2023 j5pu
-
-set -eu
-
 #######################################
-# macOS setenv for JetBrains applications configuration
+# generate jetbrains variables
 # Arguments:
 #  None
 #######################################
-main() {
-  . /etc/profile
+generate_jetbrains() {
+  local application config properties tmp
 
-  generate_jetbrains
+  : "${JETBRAINS?}"
+  : "${SHRC_PROFILE_D_GENERATED_D?}"
+  : "${JETBRAINS_CONFIG?}"
+  : "${JETBRAINS_GENERATED?}"
 
-  . "${JETBRAINS_GENERATED?}"
+  tmp="$(mktemp)"
 
-  for application in ${JETBRAINS_APPLICATIONS?}; do
-    launchctl setenv "${application^^}_PROPERTIES" "$(eval echo \$"${application^^}_PROPERTIES")"
-    launchctl setenv "${application^^}_VM_OPTIONS" "$(eval echo \$"${application^^}_VM_OPTIONS")"
+  echo "# shellcheck shell=sh" > "${tmp}"
+  for application in ${JETBRAINS_APPLICATIONS}; do
+    config="${JETBRAINS_CONFIG}/${application}"
+    mkdir -p "${config}"
+
+    properties="${config}/.properties"
+    vmoptions="${config}/.vmoptions"
+
+    {
+      echo "export ${application^^}_PROPERTIES=\"${properties}\""
+      echo "export ${application^^}_VM_OPTIONS=\"${vmoptions}\""
+    } >> "${tmp}"
+
+    { test -f "${properties}" || ! test -f "${JETBRAINS_CONFIG}/PyCharm/.properties"; } || cp "${JETBRAINS_CONFIG}/PyCharm/.properties"
+    { test -f "${vmoptions}" || ! test -f "${JETBRAINS_CONFIG}/PyCharm/.vmoptions"; } || cp "${JETBRAINS_CONFIG}/PyCharm/.vmoptions"
+
+    if test -f "${properties}"; then
+      sed -i "" "s|idea.config.path=.*|idea.config.path=${config}|" "${properties}"
+      sed -i "" "s|idea.plugins.path=.*|idea.plugins.path=${JETBRAINS}/plugins/${application}|" "${properties}"
+      sed -i "" "s|idea.scratch.path=.*|idea.scratch.path=${JETBRAINS}/scratch|" "${properties}"
+      sed -i "" "s|idea.system.path=.*|idea.system.path=${JETBRAINS}/cache/${application}|" "${properties}"
+      sed -i "" "s|idea.log.path=.*|idea.log.path=${JETBRAINS}/log/${application}|" "${properties}"
+    fi
   done
+  cmp -s "${JETBRAINS_GENERATED}" "${tmp}" || {
+    cd "${JETBRAINS_GENERATED%/*}" || return 1
+    mv "${tmp}" "${JETBRAINS_GENERATED}"
+    git add "${JETBRAINS_GENERATED}"
+    git commit -m "${JETBRAINS_GENERATED}" "${JETBRAINS_GENERATED}"
+    git push
+    }
+}
+
+setenv() {
+    for application in ${JETBRAINS_APPLICATIONS?}; do
+      launchctl setenv "${application^^}_PROPERTIES" "$(eval echo \$"${application^^}_PROPERTIES")"
+      launchctl setenv "${application^^}_VM_OPTIONS" "$(eval echo \$"${application^^}_VM_OPTIONS")"
+    done
+}
+
+main() {
+    . /etc/profile
+    generate_jetbrains
+    . "${JETBRAINS_GENERATED?}"
+
+    setenv
 }
 
 main "$@"

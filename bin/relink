@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Function to get the relative path from source to destination
+get_relative_path() {
+  local source="$1"
+  local destination="$2"
+
+  # Get the common part of the paths
+  common_part=""
+  while [ "${source%/*}" = "${destination%/*}" ]; do
+    common_part="${source##*/}"
+    source="${source%/*}"
+    destination="${destination%/*}"
+  done
+
+  # Compute the relative path with "../" notation
+  relative_path=""
+  while [ "$source" != "/" ]; do
+    relative_path="../$relative_path"
+    source="${source%/*}"
+  done
+
+  # Append the remaining part of the destination path to relative_path
+  relative_path="${relative_path}${destination##*/}"
+
+  # If the source and destination are in the same directory, use "./" instead of "../"
+  if [ -z "$relative_path" ]; then
+    relative_path="./${destination##*/}"
+  fi
+
+  echo "$relative_path"
+}
+
+# Function to create relative symlinks
+create_relative_symlink() {
+  local source="$1"
+  local destination="$2"
+
+  # Get the relative path from source to destination
+  relative_path=$(get_relative_path "$source" "$destination")
+
+  # Create the symlink
+  echo ln -s "$relative_path" "$source"
+}
+
+# Example usage: create_relative_symlink "/absolute/source/file.txt" "/absolute/destination/file.txt"
+
+# Uncomment and use the line above with appropriate paths to create the relative symlink.
+
+create_relative_symlink "$@"

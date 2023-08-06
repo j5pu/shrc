@@ -1,0 +1,86 @@
+#!/bin/sh
+
+# Usage: rellink [-f] dir|file target_dir
+
+set -eu
+
+[ "$1" != "-h" ] || echo "Usage: ${0##*/} dir|file target_dir"
+
+force=false; sudo="$(command -v sudo || true)"
+
+[ "${1}" != "-f" ] || { force=true; shift; }
+
+if test -d "$1"; then
+  src_dir="$1"
+elif test -f "$1"; then
+  src_dir="$(dirname "$1")"
+else
+  echo "Source: $1 must be a directory or a file" >&2 && exit 1
+fi
+
+filename="${1##*/}"
+src_dir="$(cd "${src_dir}" && pwd -P)"
+source="${src_dir}/${filename}"
+
+mkdir -p "$2" 2>/dev/null || "${sudo}" mkdir -p "$2"
+
+target_dir="$(cd "$2" && pwd -P)"
+target="${target_dir}/${filename}"
+
+! test -h "${target}" || [ "$(readlink "${target}")" != "${source}" ] || exit 0  # nothing to do
+
+! $force || { rm -rf "${target}" 2>/dev/null || "${sudo}" rm -rf  "${target}"; } || { echo "${target}:
+ can't be removed" >&2; exit 1; }
+
+! test -w "${target_dir}" || unset sudo
+
+src_tmp="$(mktemp)"; target_tmp="$(mktemp)"
+
+
+# Function to get the relative path from source to destination
+get_relative_path() {
+  # Make paths absolute to handle relative paths passed as arguments
+  source="$(realpath "$1")"
+  target="$(realpath "$2")"
+
+  # Get common part of the paths
+  common_part="${target}"
+  while [ "${source#"${common_part}"}" = "${source}" ]; do
+    common_part="$(dirname "${common_part}")"
+  done
+
+  # Compute the relative path
+  relative_path="${source#"${common_part}"}"
+  if [ "${relative_path#/}" = "${relative_path}" ]; then
+    relative_path="./${relative_path}"
+  fi
+
+  echo "${relative_path}"
+}
+
+# Function to create relative symlinks
+create_relative_symlink() {
+  # Get the relative path from source to destination
+  relative_path=$(get_relative_path "$1" "$2")
+
+  # Create the symlink
+  ln -s "${relative_path}" "$1"
+}
+
+# Example usage: create_relative_symlink "/absolute/source/file.txt" "/absolute/destination/file.txt"
+
+# Uncomment and use the line above with appropriate paths to create the relative symlink.
+src_parts="$(echo "${src_dir}" | sed 's|/| |g' | xargs > "${src_tmp}" )"
+target_parts="$(echo "${target_dir}" | sed 's|/| |g' | xargs > "${target_tmp}")"
+#/usr/local/bin/hola /usr/bin/hola
+#/usr/local/ hola /usr/local/bin/ hola  || ln -s ../hola hola
+#/usr/bin/ hola /usr/local/bin/ hola  || ln -s ../../hola hola
+
+common_part=""
+while [ "${source%/*}" = "${target%/*}" ]; do
+  common_part="${source##*/}"
+  source="${source%/*}"
+  target="${target%/*}"
+done
+
+cd "${target_dir}"

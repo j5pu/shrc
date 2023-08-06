@@ -1,0 +1,124 @@
+#!/bin/sh
+
+# Usage: rellink [-f] dir|file target_dir
+
+set -eu
+
+error() { echo "$@" >&2; exit 1; }
+
+get_absolute_dir() ( cd "$1" && pwd )
+
+# If the highest common subdirectory is the root /, it will create an absolute symlink.
+# Otherwise, it will create relative symlinks using ../ notation from the source directory to the destination directory.
+# If the source and destination are in the same directory, it will use ./ notation for the relative symlink.
+get_relative_path() {
+  # This updated script calculates the relative path differently.
+  target="${TARGET_ABSOLUTE}"
+  source="${SOURCE_ABSOLUTE}"
+
+  # Check if the highest common subdirectory is the root directory
+  common_subdir="$(dirname "${target}")"
+  while [ "${source}" != "${common_subdir}" ] && [ "${common_subdir}" != "/" ]; do
+    common_subdir="$(dirname "${common_subdir}")"
+  done
+
+  # Compute the relative path with "../" or "./" notation
+  relative_path=""
+  if [ "${source}" = "${common_subdir}" ]; then
+    relative_path="./${target#"${common_subdir}"/}"
+  else
+    while [ "${target}" != "${common_subdir}" ]; do
+      relative_path="${relative_path}../"
+      target="$(dirname "${target}")"
+    done
+    relative_path="${relative_path}${source#"${common_subdir}"}"
+  fi
+
+  echo "${relative_path}"
+}
+
+help() { [ "$1" != "-h" ] || error "Usage: ${0##*/} dir|file target_dir"; }
+
+with_sudo() {
+  if [ "${SUDO}" ]; then
+     "$@" 2>/dev/null || "${SUDO}" "$@"
+  else
+    "$@"
+  fi
+}
+
+main() {
+  SUDO="$(command -v sudo || true)"
+  force=false; [ "${1}" != "-f" ] || { force=true; shift; }
+
+  if test -d "$1"; then
+    # TODO: Volver a poner esto y poner el nombre del fichero de destino y si es file entonces dir en destino lo saco.
+    source_dir="$1"
+  elif test -f "$1"; then
+    source_dir="$(dirname "$1")"
+  else
+    error "${0##*/}: source $1 must be a directory or a file"
+  fi
+
+  filename="${1##*/}"
+  source_dir="$(get_absolute_dir "${source_dir}")"
+  SOURCE_ABSOLUTE="${source_dir}/${filename}"
+
+  with_sudo mkdir -p "$2"
+
+  target_dir="$(get_absolute_dir "$2")"
+  TARGET_ABSOLUTE="${target_dir}/${filename}"
+
+  [ "${SOURCE_ABSOLUTE}" != "${TARGET_ABSOLUTE}" ] || error "${0##*/}: doesn't make links on the same directory"
+  ! test -h "${TARGET_ABSOLUTE}" || [ "$(readlink "${TARGET_ABSOLUTE}")" != "${SOURCE_ABSOLUTE}" ] || exit 0 # nothing to do
+
+  ! $force || with_sudo rm -rf "${TARGET_ABSOLUTE}" || error "${0##*/}: ${TARGET_ABSOLUTE} can't be removed"
+
+  ! test -w "${target_dir}" || unset SUDO
+
+  target="${TARGET_ABSOLUTE}"
+  source="${SOURCE_ABSOLUTE}"
+
+  get_value() { echo "$1" | cut -d "/" -f "$2"; }
+  set -x
+  i=2
+  common_part=""
+  source_top="$(get_value "${source_dir}" $i)"
+  target_top="$(get_value "${target_dir}" $i)"
+
+
+  while [ "${source_top}" = "${target_top}" ]; do
+    common_part="${common_part}/${source_top}"
+    i=$((i + 1))
+    source_top="$(get_value "${source_dir}" $i)"
+    target_top="$(get_value "${target_dir}" $i)"
+    source="$(echo "${source_dir}" | sed "s|${common_part}||")"
+    target="$(echo "${target_dir}" | sed "s|${common_part}||")"
+  done
+
+  set +x
+
+  src_tmp="$(mktemp)"; target_tmp="$(mktemp)"
+
+  src_parts="$(echo "${source}" | sed 's|/| |g' | xargs > "${src_tmp}" )"
+  target_parts="$(echo "${target}" | sed 's|/| |g' | xargs > "${target_tmp}")"
+
+
+  echo "common_part: ${common_part}"
+  echo "source: ${source}"
+  echo "target: ${target}"
+
+#/usr/local/bin/hola /usr/bin/hola
+#/usr/local/ hola /usr/local/bin/ hola  || ln -s ../hola hola
+#/usr/bin/ hola /usr/local/bin/ hola  || ln -s ../../hola hola
+
+# "ln -s ../a 2"  for "/tmp/a /tmp/1/2"
+
+  # Get the relative path from source to destination
+#  relative_path=$(get_relative_path)
+  # Create the symlink
+  echo with sudo ln -s "${relative_path}" "${TARGET_ABSOLUTE}"
+
+}
+
+main "$@"
