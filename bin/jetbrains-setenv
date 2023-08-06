@@ -18,7 +18,7 @@ main() {
 
   . "${JETBRAINS_GENERATED?}"
 
-  for application in ${JETBRAINS_APPLICATIONS}; do
+  for application in ${JETBRAINS_APPLICATIONS?}; do
     launchctl setenv "${application^^}_PROPERTIES" "$(eval echo \$"${application^^}_PROPERTIES")"
     launchctl setenv "${application^^}_VM_OPTIONS" "$(eval echo \$"${application^^}_VM_OPTIONS")"
   done
