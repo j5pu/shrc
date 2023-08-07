@@ -130,7 +130,7 @@ with_sudo() {
 #     "ln -s /bin/ls /tmp/1/ls"
 #   $ relative /usr/bin /tmp/1/sbin
 #   $ ls -la /tmp/1/sbin
-#     "ln -s /bin/ls /tmp/1/sbin"
+#     "ln -s /bin/ls /tmp/1/sbin"  JEDITERM_SOURCE  TERMINAL_EMULATOR
 #######################################
 main() {
   SUDO="$(command -v sudo || true)"

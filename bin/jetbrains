@@ -6,7 +6,7 @@
 #  None
 #######################################
 generate_jetbrains() {
-  local application config properties tmp
+  local application config properties tmp vmoptions
 
   : "${JETBRAINS?}"
   : "${SHRC_PROFILE_D_GENERATED_D?}"
@@ -28,8 +28,10 @@ generate_jetbrains() {
       echo "export ${application^^}_VM_OPTIONS=\"${vmoptions}\""
     } >> "${tmp}"
 
-    { test -f "${properties}" || ! test -f "${JETBRAINS_CONFIG}/PyCharm/.properties"; } || cp "${JETBRAINS_CONFIG}/PyCharm/.properties"
-    { test -f "${vmoptions}" || ! test -f "${JETBRAINS_CONFIG}/PyCharm/.vmoptions"; } || cp "${JETBRAINS_CONFIG}/PyCharm/.vmoptions"
+    { test -f "${properties}" || ! test -f "${JETBRAINS_CONFIG}/PyCharm/.properties"; } || \
+      cp "${JETBRAINS_CONFIG}/PyCharm/.properties" "${properties}"
+    { test -f "${vmoptions}" || ! test -f "${JETBRAINS_CONFIG}/PyCharm/.vmoptions"; } || \
+      cp "${JETBRAINS_CONFIG}/PyCharm/.vmoptions" "${vmoptions}"
 
     if test -f "${properties}"; then
       sed -i "" "s|idea.config.path=.*|idea.config.path=${config}|" "${properties}"
@@ -48,13 +50,29 @@ generate_jetbrains() {
     }
 }
 
+#######################################
+# description
+# Globals:
+#   JETBRAINS_APPLICATIONS
+#   application
+# Arguments:
+#  None
+#######################################
 setenv() {
+    local application
     for application in ${JETBRAINS_APPLICATIONS?}; do
       launchctl setenv "${application^^}_PROPERTIES" "$(eval echo \$"${application^^}_PROPERTIES")"
       launchctl setenv "${application^^}_VM_OPTIONS" "$(eval echo \$"${application^^}_VM_OPTIONS")"
     done
 }
 
+#######################################
+# description
+# Globals:
+#   JETBRAINS_GENERATED
+# Arguments:
+#  None
+#######################################
 main() {
     . /etc/profile
     generate_jetbrains
