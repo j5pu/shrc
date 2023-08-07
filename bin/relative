@@ -1,0 +1,195 @@
+#!/bin/sh
+
+# Usage: rellink [-f] dir|file target_dir
+
+set -eu
+
+#######################################
+# show error and exit
+# Arguments:
+#  None
+#######################################
+error() { echo "$@" >&2; exit 1; }
+
+#######################################
+# absolute path
+# Arguments:
+#   1
+#######################################
+get_absolute_dir() ( cd "$1" && pwd )
+
+# If the highest common subdirectory is the root /, it will create an absolute symlink.
+# Otherwise, it will create relative symlinks using ../ notation from the source directory to the destination directory.
+# If the source and destination are in the same directory, it will use ./ notation for the relative symlink.
+get_relative_path() {
+  # This updated script calculates the relative path differently.
+  target_remaining="${TARGET_ABSOLUTE}"
+  source_remaining="${SOURCE_ABSOLUTE}"
+
+  # Check if the highest common subdirectory is the root directory
+  common_subdir="$(dirname "${target_remaining}")"
+  while [ "${source_remaining}" != "${common_subdir}" ] && [ "${common_subdir}" != "/" ]; do
+    common_subdir="$(dirname "${common_subdir}")"
+  done
+
+  # Compute the relative path with "../" or "./" notation
+  relative_path=""
+  if [ "${source_remaining}" = "${common_subdir}" ]; then
+    relative_path="./${target_remaining#"${common_subdir}"/}"
+  else
+    while [ "${target_remaining}" != "${common_subdir}" ]; do
+      relative_path="${relative_path}../"
+      target_remaining="$(dirname "${target_remaining}")"
+    done
+    relative_path="${relative_path}${source_remaining#"${common_subdir}"}"
+  fi
+
+  echo "${relative_path}"
+}
+
+#######################################
+# get part of path from index
+# Arguments:
+#   1
+#   2
+#######################################
+get_value() { echo "$1" | cut -d "/" -f "$2"; }
+
+#######################################
+# help and exit
+# Arguments:
+#   0
+#   1
+#######################################
+help() { [ "$1" != "-h" ] || error "Usage: ${0##*/} dir|file target_dir"; }
+
+#######################################
+# execute command without sudo and with sudo if error
+# Globals:
+#   SUDO
+# Arguments:
+#  None
+#######################################
+with_sudo() {
+  if [ "${SUDO}" ]; then
+     "$@" 2>/dev/null || "${SUDO}" "$@"
+  else
+    "$@"
+  fi
+}
+
+#######################################
+# description
+# Globals:
+#   SOURCE_ABSOLUTE
+#   SUDO
+#   TARGET_ABSOLUTE
+#   common_part
+#   force
+#   relative_path
+#   source
+#   source_basename
+#   source_dirname
+#   source_relative
+#   source_top
+#   src_parts
+#   src_tmp
+#   target
+#   target_basename
+#   target_dirname
+#   target_parts
+#   target_relative
+#   target_relative_dirname
+#   target_tmp
+#   target_top
+# Arguments:
+#   1
+#   2
+#   3
+# Examples:
+#   $ touch /tmp/source_file && relative /tmp/source_file /tmp/1/2/3/target_file
+#   $ ls -la  /tmp/1/2/3/target_file
+#     "ln -s ../../../source_file target_file"
+#   $ mkdir -p /tmp/source_dir && relative /tmp/source_dir /tmp/1/2/target_dir
+#   $ ls -la /tmp/1/2/target_dir
+#     "ln -s ../../source_dir target_dir"
+#   $ mkdir -p /tmp/1/2/3 && touch /tmp/1/2/3/source_file && relative /tmp/1/2/3/source_file /tmp/2/target_file
+#   $ ls -la /tmp/2/target_file
+#     "ln -s ../1/2/3/source_file target_file"
+#   $ mkdir -p /tmp/1/2/source_dir && relative /tmp/1/2/source_dir /tmp/2/target_dir
+#   $ ls -la /tmp/2/target_dir
+#     "ln -s ../1/2/source_dir target_dir"
+#   $ touch /tmp/1/2/source_file && relative /tmp/1/2/source_file /tmp/1/2/target_file
+#   $ ls -la /tmp/1/2/target_file
+#     "ln -s ./source_file target_file"
+#   $ mkdir -p /tmp/1/2/3/source_dir && relative /tmp/1/2/3/source_dir /tmp/1/2/3/target_dir
+#   $ la -la  /tmp/1/2/3/target_dir
+#     "ln -s ./source_dir target_dir"
+#   $ relative /bin/ls /tmp/1/ls
+#   $ ls -la /tmp/1/ls
+#     "ln -s /bin/ls /tmp/1/ls"
+#   $ relative /usr/bin /tmp/1/sbin
+#   $ ls -la /tmp/1/sbin
+#     "ln -s /bin/ls /tmp/1/sbin"
+#######################################
+main() {
+  SUDO="$(command -v sudo || true)"
+  force=false; [ "${1}" != "-f" ] || { force=true; shift; }
+
+  source_relative="$1"
+  target_relative="$2"
+  
+  test -d "${source_relative}" || test -f  "${source_relative}" || error "${0##*/}: source $1 must be a directory/file"
+
+  set -x
+
+  source_dirname="$(get_absolute_dir "$(dirname "${source_relative}")")"
+  source_basename="${source_relative##*/}"
+  SOURCE_ABSOLUTE="${source_dirname}/${source_basename}"
+
+  target_relative_dirname="$("$(dirname "${target_relative}")")"
+  target_basename="${target_relative##*/}"
+  with_sudo mkdir -p "${target_relative_dirname}"
+  target_dirname="$(get_absolute_dir "${target_relative_dirname}")"
+  TARGET_ABSOLUTE="${target_dirname}/${target_basename}"
+
+  [ "${SOURCE_ABSOLUTE}" != "${TARGET_ABSOLUTE}" ] || error "${0##*/}: source and target can not be identical name"
+  ! test -h "${TARGET_ABSOLUTE}" || [ "$(readlink "${TARGET_ABSOLUTE}")" != "${SOURCE_ABSOLUTE}" ] || exit 0 # nothing to do
+
+  ! $force || with_sudo rm -rf "${TARGET_ABSOLUTE}" || error "${0##*/}: ${TARGET_ABSOLUTE} can't be removed"
+
+  ! test -w "${target_dirname}" || unset SUDO
+
+  cd "${target_dirname}"
+
+  source_remaining="${SOURCE_ABSOLUTE}"
+  target_remaining="${TARGET_ABSOLUTE}"
+
+  set -x
+  i=2
+  common_part=""
+  source_part="$(get_value "${source_dirname}" $i)"
+  target_part="$(get_value "${target_dirname}" $i)"
+
+
+  while [ "${source_part}" = "${target_part}" ]; do
+    [ $i -ne 2 ] || break  # absolute with no common part
+    common_part="${common_part}/${source_part}"
+    i=$((i + 1))
+    source_part="$(get_value "${source_dirname}" $i)"
+    target_part="$(get_value "${target_dirname}" $i)"
+    source_remaining="$(echo "${source_dirname}" | sed "s|${common_part}||")"
+    target_remaining="$(echo "${target_dirname}" | sed "s|${common_part}||")"
+  done
+
+  set +x
+
+  echo "common_part: ${common_part}"
+  echo "source: ${source_remaining}"
+  echo "target: ${target_remaining}"
+
+  echo with sudo ln -s "${source_remaining}" "${target_remaining}"
+
+}
+
+main "$@"
