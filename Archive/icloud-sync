@@ -1,0 +1,48 @@
+#!/usr/local/bin/bash
+
+DOWNLOAD=( ~/Desktop ~/CloudDocs/Documents ~/CloudDocs/Downloads ~/CloudDocs/Applications )
+EVICT=( ~/CloudDocs/Compressed ~/CloudDocs/Empresas ~/CloudDocs/Fonts )
+
+#######################################
+# description
+# Globals:
+#   file
+# Arguments:
+#  None
+#######################################
+docs() {
+  local file
+
+  while read -r file; do
+    case "$file" in
+      *Empresas) evict "$file" ;;
+      *) download "$file" ;;
+    esac
+  done < <(find ~/Documents -type d -mindepth 1 -maxdepth 1) 
+}
+
+#######################################
+# description
+# Globals:
+#   DOWNLOAD
+#   EVICT
+#   i
+# Arguments:
+#  None
+#######################################
+main() {
+  local i
+
+  find -H ~/"Library/Mobile Documents" -type d -mindepth 1 -maxdepth 1 \
+    -not -name com~apple~CloudDocs -not -name com~apple~Numbers -exec evict "{}" \;
+
+  for i in "${DOWNLOAD[@]}"; do 
+    download "$(realpath "$i")"
+  done
+
+  for i in "${EVICT[@]}"; do  
+    evict "$(realpath "$i")"
+  done
+}
+
+main 2>&1 | grep -v "evicted content of "

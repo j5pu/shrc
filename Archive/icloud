@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+find -H -L ~/Library/Mobile\ Documents/ -not -path "*/com~apple~CloudDocs/Documents/*" \
+  -and -not -name "*.icloud" -exec brctl evict "{}" \; &
+find -H -L ~/Library/Mobile\ Documents/com~apple~CloudDocs/Documents -exec brctl download "{}" \; &
+
+wait

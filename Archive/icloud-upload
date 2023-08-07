@@ -1,0 +1,110 @@
+#!/usr/local/bin/bash
+# shellcheck disable=SC2034
+
+CLOUD="$(realpath ~/"Library/Mobile Documents")"
+TMP="$(mktemp)"
+
+NO_SUCH_FILE="brctl: Unable to evict item at path "
+EVICTED="evicted content of "
+NO_SUCH_FILE="No such file or directory"
+NO_SYNC="Document hasn't yet been synced to the server"
+NOT_PERMITTED="Operation not permitted"
+
+#######################################
+# description
+# Globals:
+#   CLOUD
+#   TMP
+# Arguments:
+#   1
+#######################################
+cmd() { find "${CLOUD[@]}" -type "${1:-f}" -not -name "*.icloud" -and -not -name ".DS_Store" -and -not -name \
+  "Mobile Documents" >"${TMP}"; }
+
+#######################################
+# description
+# Globals:
+#   ERROR
+#   FILE
+#   RV
+# Arguments:
+#  None
+#######################################
+fmt() {
+  local error file
+  # Download NSFIlePath
+  #DOWNLOAD_PATH_ERROR="$(echo "${RV}" | grep NSFilePath | awk -F '"' '{ print $2 }'"
+
+  file="$(echo "${RV}" | head -1 | awk -F "'" '{ print $2 }')"
+  error="$(echo "${RV}" | grep NSDescription | tail -1 | awk -F '"' '{ print $3 }' | sed 's/\\//g')"
+  echo "${file}: ${error}"
+}
+
+#######################################
+# description
+# Globals:
+#   LINES
+#   TMP
+# Arguments:
+#  None
+#######################################
+lines() { LINES="${LINES:+${LINES} }$(wc -l "${TMP}" | awk '{ print $1}')"; }
+
+#######################################
+# description
+# Globals:
+#   RV
+# Arguments:
+#   1
+#######################################
+evict() {
+  RV="$(brctl evict "${1}" 2>&1)"
+  case "${RV}" in
+    *NSDescription*) fmt ;;
+  esac
+}
+
+#######################################
+# description
+# Globals:
+#   TMP
+#   file
+# Arguments:
+#   1
+#######################################
+files() {
+  local file
+
+  cmd "${1-}"
+  lines
+  while read -r file; do
+    evict "${file}"
+  done <"${TMP}"
+}
+
+#######################################
+# description
+# Arguments:
+#   1
+#######################################
+header() { echo -e "$1\n====="; }
+
+#######################################
+# description
+# Globals:
+#   LINES
+# Arguments:
+#   1
+#######################################
+main() {
+  header FILES
+  files
+  [ "${1:-}" != "d" ] || {
+    echo
+    header DIRS
+    files "$1"
+  }
+  echo "${LINES}"
+}
+
+main "$@"

@@ -1,0 +1,7 @@
+#!/usr/local/bin/bash
+
+find -H -L "$(realpath ~/Library/Mobile\ Documents)" -mindepth 1 -not -name ".DS_Store" \
+  -and -not -path "*/Compressed/*" -and -not -path "*/Empresas/*" -and -not -path "*/Fonts/*" \
+    -and -name "*.icloud" -exec brctl download "{}" \;
+find -H -L "$(realpath ~/Library/Mobile\ Documents)" -mindepth 1  -and -not -path "*/Empresas/*" \
+  -and -not -path "*/Fonts/*" -type d -and -not -path "*/Compressed/*" -exec brctl download "{}" \;
