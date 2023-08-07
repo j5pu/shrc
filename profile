@@ -6,7 +6,7 @@
 # Profile has been sourced to avoid sourcing again in user interactive shell
 #
 : "${SHRC_PROFILE_SOURCED=0}"
-[ "${SHRC_PROFILE_SOURCED}" -eq 0 ] || return
+[ "${SHRC_PROFILE_SOURCED}" -eq 0 ] || return 0
 
 unset ENV
 
@@ -17,22 +17,94 @@ unset ENV
 #######################################
 cmd() { command -v "${1}" >/dev/null; }
 #######################################
-# source files in arguments
-# Arguments:
-#  user     default $GIT or $USER
-#######################################
-source_files() { for arg; do ! test -f "${arg}" || . "${arg}"; done; }
-#######################################
 # get user home
 # Arguments:
 #  user     default $GIT or $USER
 #######################################
 home() { ${SUDO:+${SUDO} -u} "${1-${GIT}}" sh -c 'echo "${HOME}"'; }
-
+#######################################
+# # Prepend paths to INFOPATH
+# Globals:
+#   PATH
+# Arguments:
+#   1
+# Returns:
+#   0 ...
+#######################################
+infopathadd() {
+  for arg; do
+    test -d "${arg}" || continue
+    case ":${INFOPATH}:"  in
+      *":${arg}:"*) continue ;;
+    esac
+    INFOPATH="${arg}${INFOPATH:+:"${INFOPATH}"}"
+  done
+}
+#######################################
+# # Prepend paths to MANPATH
+# Globals:
+#   PATH
+# Arguments:
+#   1
+# Returns:
+#   0 ...
+#######################################
+manpathadd() {
+  for arg; do
+    test -d "${arg}" || continue
+    case ":${MANPATH}:" in
+       *":${arg}:"*) continue ;;
+    esac
+    export MANPATH="${arg}:${MANPATH:+"${MANPATH}"}"
+  done
+}
+#######################################
+# # Prepend paths to PATH
+# Globals:
+#   PATH
+# Arguments:
+#   1
+# Returns:
+#   0 ...
+#######################################
+pathadd() {
+  for arg; do
+    test -d "${arg}" || continue
+    case ":${PATH}:"  in
+      *":${arg}:"*) continue ;;
+    esac
+    PATH="${arg}${PATH:+:"${PATH}"}"
+  done
+}
+#######################################
+# # Prepend paths to PYTHONPATH
+# Globals:
+#   PATH
+# Arguments:
+#   1
+# Returns:
+#   0 ...
+#######################################
+pythonpathadd() {
+  for arg; do
+    test -d "${arg}" || continue
+    case ":${PYTHONPATH}:" in
+       *":${arg}:"*) continue ;;
+    esac
+    export PYTHONPATH="${arg}${PYTHONPATH:+:"${PYTHONPATH}"}"
+  done
+}
+#######################################
+# source files in arguments
+# Arguments:
+#  user     default $GIT or $USER
+#######################################
+source_files() { for arg; do ! test -f "${arg}" || . "${arg}"; done; }
 
 # sudo command path
 #
-SUDO="$(command -v sudo || true)"; export SUDO
+SUDO="$(command -v sudo || true)"
+export SUDO
 # Default user and Git User
 #
 export GIT="j5pu"
@@ -41,7 +113,8 @@ export GIT="j5pu"
 export DEFAULT_HOME="$(home)"
 # brew prefix
 #
-: "${HOMEBREW_PREFIX=/usr/local}"; export HOMEBREW_PREFIX
+: "${HOMEBREW_PREFIX=/usr/local}"
+export HOMEBREW_PREFIX
 # Short hostname
 #
 export HOST="$(hostname -s)"
@@ -59,49 +132,53 @@ export PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
 export SECRETS="/Users/${GIT}/secrets/secrets.sh"
 # SHRC root
 #
-: "${SHRC=/Users/${GIT}/shrc}"; export SHRC
+: "${SHRC=/Users/${GIT}/shrc}"
+export SHRC
 # Application configurations that can be configured with global variables and do not contain secrets.
 #
 export SHRC_CONFIG="${SHRC}/config"
 # shrc shell for commands hooks (bash or zsh)
 #
-SHRC_HOOKS_SHELL="$(basename "${BASH:-${ZSH_NAME}}" | sed 's/^sh$/bash/')"; export SHRC_HOOKS_SHELL
+SHRC_HOOKS_SHELL="$(basename "${BASH:-${ZSH_NAME}}" | sed 's/^sh$/bash/')"
+export SHRC_HOOKS_SHELL
 # SHRC packages directory
 #
-export SHRC_PACKAGES="${SHRC}/packages";
+export SHRC_PACKAGES="${SHRC}/packages"
 # SHRC profile and system profile file
 #
-export SHRC_PROFILE="${SHRC}/profile";
+export SHRC_PROFILE="${SHRC}/profile"
 # SHRC profile compat directory
 #
-export SHRC_PROFILE_D="${SHRC}/profile.d";
+export SHRC_PROFILE_D="${SHRC}/profile.d"
 # SHRC generated libraries in  profile compat directory
 #
-export SHRC_PROFILE_D_GENERATED_D="${SHRC_PROFILE_D}/99-generated.d";
+export SHRC_PROFILE_D_GENERATED_D="${SHRC_PROFILE_D}/99-generated.d"
 # Darwin or Linux
 #
-UNAME="$(uname -s)"; export UNAME
+UNAME="$(uname -s)"
+export UNAME
 
 if [ "${UNAME}" = "Darwin" ]; then
-  unset PATH; eval "$(/usr/libexec/path_helper -s)"
+  unset PATH
+  eval "$(/usr/libexec/path_helper -s)"
   export CLT="/Library/Developer/CommandLineTools"
   PATH="${PATH}:${CLT}/usr/bin"
 else
   HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
-  MACOS=false
+  export MACOS=false
 fi
 
 # source: posix (common to all shells)
 #
-source_files "${SHRC_PROFILE_D}"/??-*/*.sh
+source_files "${SHRC_PROFILE_D}"/??*.d/*.sh
 
 # source: bash and zsh hooks
 #
-[ ! "${SHRC_HOOKS_SHELL-}" ] || source_files "${SHRC_PROFILE_D}"/??-*/*."${SHRC_HOOKS_SHELL}"
+[ ! "${SHRC_HOOKS_SHELL-}" ] || source_files "${SHRC_PROFILE_D}"/??*.d/*."${SHRC_HOOKS_SHELL}"
 
 # source: Darwin and Linux (UNAME)
 #
-! test -d "${SHRC_PROFILE_D}/${UNAME}.d" || source_files "${SHRC_PROFILE_D}/${UNAME}.d"/*.sh
+! test -d "${SHRC_PROFILE_D}/${UNAME}.d" || source_files "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*.sh
 
 # source: secrets
 #
@@ -112,6 +189,5 @@ source_files "${SECRETS}"
 ! test -d "${HOMEBREW_PREFIX}/etc/profile.d" || source_files "${HOMEBREW_PREFIX}/etc/profile.d"/*
 
 ! cmd export_all_functions || export_all_functions
-
 export ENV="${SHRC_PROFILE}"
 SHRC_PROFILE_SOURCED=1

@@ -1,15 +1,52 @@
 # shellcheck shell=bash
 
 #######################################
+# download one or more files or directories
+# Globals:
+#   arg
+# Arguments:
+#  None
+#######################################
+download() {
+  local arg
+  [ $# -gt 0 ] || set -- .
+  for arg; do
+    if test -d "${arg}"; then
+      find "${arg}" -name "*.icloud" -exec brctl download "{}" \;
+    else
+      brctl download "${arg}"
+    fi
+  done
+}
+
+#######################################
 # iCloud download directory
 # Arguments:
 #   1
 #######################################
-download() {
+download_dir() {
   local dir
   dir="$(realpath "${1:-.}")"
   #  find -L "${dir}" -type d -exec brctl download "{}" \;
   find -L "${dir}" -type f -name "*.icloud" -exec brctl download "{}" \;
+}
+
+
+#######################################
+# evict one or more files or directories
+# Arguments:
+#  None
+#######################################
+evict() {
+  local arg
+  [ $# -gt 0 ] || set -- .
+  for arg; do
+    if test -d "${arg}"; then
+      find "${arg}" -not -name "*.icloud" -and -not -name .DS_Store -exec brctl evict "{}" \;
+    else
+      brctl evict "${arg}"
+    fi
+  done
 }
 
 #######################################
@@ -17,7 +54,7 @@ download() {
 # Arguments:
 #   1
 #######################################
-evict() {
+evict_dir() {
   local dir
   dir="$(realpath "${1:-.}")"
   find -L "${dir}" -type d -exec brctl evict "{}" \;
