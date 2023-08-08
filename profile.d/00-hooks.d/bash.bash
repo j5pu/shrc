@@ -16,7 +16,8 @@ if $BASH4; then
     enable -f truefalse true
     for i in accept basename csv cut dirname dsv fdflags finfo getconf \
       head id ln logname mkdir mkfifo mktemp pathchk print printenv \
-      push realpath rm rmdir seq setpgid sleep stat strftime sync tee tty uname unlink whoami; do
+      push rm rmdir seq setpgid sleep strftime sync tee tty uname unlink whoami; do
+      # realpath stat
         enable -f "$i" "$i" 2>/dev/null
     done
 fi
@@ -29,5 +30,5 @@ stty -ixon
 
 # https://zwischenzugs.com/2019/04/03/eight-obscure-bash-options-you-might-want-to-know-about/
 #
-shopt -s autocd cdable_vars checkwinsize dotglob execfail histappend nocaseglob nocasematch
-! $BASH4 || shopt -s direxpand dirspell globstar progcomp_alias
+shopt -s cdable_vars checkwinsize dotglob execfail histappend nocaseglob nocasematch
+! $BASH4 || shopt -s autocd direxpand dirspell globstar progcomp_alias

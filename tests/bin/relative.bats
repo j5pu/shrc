@@ -29,11 +29,11 @@ setup_file() {
 
     export SRC_H="${TMPDIR}/1/sbin"
 }
-
-teardown_file() {
-  # executed after each test
-  rm -rf "${TMPDIR?}"/*
-}
+#
+#teardown_file() {
+#  # executed after each test
+#  rm -rf "${TMPDIR?}"/*
+#}
 
 @test "assert::helps creates relative symlinks from destination directory" {
   bats::success
