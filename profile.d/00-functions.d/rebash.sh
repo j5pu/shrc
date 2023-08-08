@@ -1,3 +1,3 @@
 # shellcheck shell=sh
 
-rebash() { unset SHRC && . /etc/profile; }
+rebash() { unset SHRC_PROFILE_SOURCED && . /etc/profile; }

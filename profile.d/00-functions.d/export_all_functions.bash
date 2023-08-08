@@ -8,5 +8,5 @@
 #######################################
 export_all_functions() {
   # shellcheck disable=SC2046
-  export -f $(compgen -A function | grep -v '^_')
+  ! cmd compgen || export -f $(compgen -A function | grep -v '^_')
 }

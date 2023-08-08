@@ -37,7 +37,7 @@ infopathadd() {
     case ":${INFOPATH}:"  in
       *":${arg}:"*) continue ;;
     esac
-    INFOPATH="${arg}${INFOPATH:+:"${INFOPATH}"}"
+    export INFOPATH="${arg}${INFOPATH:+:"${INFOPATH}"}"
   done
 }
 #######################################
@@ -129,18 +129,30 @@ export ORG="mnopi"
 export PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
 # Secrets repository path
 #
-export SECRETS="/Users/${GIT}/secrets/secrets.sh"
+export SECRETS="${DEFAULT_HOME}/secrets/secrets.sh"
 # SHRC root
 #
-: "${SHRC=/Users/${GIT}/shrc}"
+: "${SHRC=${DEFAULT_HOME}}"
 export SHRC
+# SHRC bin directory.
+#
+export SHRC_BIN="${SHRC}/bin"
+# SHRC completions compat directory. BASH_COMPLETION_USER_DIR
+#
+export SHRC_COMPLETIONS="${SHRC}/completions.d"
 # Application configurations that can be configured with global variables and do not contain secrets.
 #
 export SHRC_CONFIG="${SHRC}/config"
+# SHRC generated color bin directory
+#
+export SHRC_GENERATED_COLOR="${SHRC}/color"
 # shrc shell for commands hooks (bash or zsh)
 #
 SHRC_HOOKS_SHELL="$(basename "${BASH:-${ZSH_NAME}}" | sed 's/^sh$/bash/')"
 export SHRC_HOOKS_SHELL
+# SHRC shell scripts sourcing libraries directory.
+#
+export SHRC_LIB="${SHRC}/lib"
 # SHRC packages directory
 #
 export SHRC_PACKAGES="${SHRC}/packages"
