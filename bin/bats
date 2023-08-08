@@ -36,7 +36,7 @@ main() {
 
   _update
 
-  exec "${BATS_EXECUTABLE}" --print-output-on-failure "${@}"
+  exec "${BATS_EXECUTABLE}" -r --print-output-on-failure "$@"
 }
 
 main "$@"

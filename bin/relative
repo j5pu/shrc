@@ -9,7 +9,7 @@ set -eu
 # Arguments:
 #  None
 #######################################
-error() { echo "$@" >&2; exit 1; }
+die() { Error "${0##*/}:" "$@" >&2; exit 1; }
 
 #######################################
 # absolute path
@@ -18,35 +18,6 @@ error() { echo "$@" >&2; exit 1; }
 #######################################
 get_absolute_dir() ( cd "$1" && pwd )
 
-# If the highest common subdirectory is the root /, it will create an absolute symlink.
-# Otherwise, it will create relative symlinks using ../ notation from the source directory to the destination directory.
-# If the source and destination are in the same directory, it will use ./ notation for the relative symlink.
-get_relative_path() {
-  # This updated script calculates the relative path differently.
-  target_remaining="${TARGET_ABSOLUTE}"
-  source_remaining="${SOURCE_ABSOLUTE}"
-
-  # Check if the highest common subdirectory is the root directory
-  common_subdir="$(dirname "${target_remaining}")"
-  while [ "${source_remaining}" != "${common_subdir}" ] && [ "${common_subdir}" != "/" ]; do
-    common_subdir="$(dirname "${common_subdir}")"
-  done
-
-  # Compute the relative path with "../" or "./" notation
-  relative_path=""
-  if [ "${source_remaining}" = "${common_subdir}" ]; then
-    relative_path="./${target_remaining#"${common_subdir}"/}"
-  else
-    while [ "${target_remaining}" != "${common_subdir}" ]; do
-      relative_path="${relative_path}../"
-      target_remaining="$(dirname "${target_remaining}")"
-    done
-    relative_path="${relative_path}${source_remaining#"${common_subdir}"}"
-  fi
-
-  echo "${relative_path}"
-}
-
 #######################################
 # get part of path from index
 # Arguments:
@@ -54,14 +25,6 @@ get_relative_path() {
 #   2
 #######################################
 get_value() { echo "$1" | cut -d "/" -f "$2"; }
-
-#######################################
-# help and exit
-# Arguments:
-#   0
-#   1
-#######################################
-help() { [ "$1" != "-h" ] || error "Usage: ${0##*/} dir|file target_dir"; }
 
 #######################################
 # execute command without sudo and with sudo if error
@@ -80,28 +43,6 @@ with_sudo() {
 
 #######################################
 # description
-# Globals:
-#   SOURCE_ABSOLUTE
-#   SUDO
-#   TARGET_ABSOLUTE
-#   common_part
-#   force
-#   relative_path
-#   source
-#   source_basename
-#   source_dirname
-#   source_relative
-#   source_top
-#   src_parts
-#   src_tmp
-#   target
-#   target_basename
-#   target_dirname
-#   target_parts
-#   target_relative
-#   target_relative_dirname
-#   target_tmp
-#   target_top
 # Arguments:
 #   1
 #   2
@@ -134,62 +75,96 @@ with_sudo() {
 #######################################
 main() {
   SUDO="$(command -v sudo || true)"
-  force=false; [ "${1}" != "-f" ] || { force=true; shift; }
 
-  source_relative="$1"
-  target_relative="$2"
+  echo=""; force=false;
+
+  case "$1" in
+    -f|--force) force=true; shift ;;
+    -h|--help) { echo "Usage: ${0##*/} [-d|--dry] [-f|--force] dir|file target_dir"; exit; } ;;
+    -d|--dry) echo=echo; shift ;;
+  esac
+  source_relative="$(echo "$1" | sed 's|/$||')"
+  target_relative="$(echo "$2" | sed 's|/$||')"
   
-  test -d "${source_relative}" || test -f  "${source_relative}" || error "${0##*/}: source $1 must be a directory/file"
-
-  set -x
+  test -d "${source_relative}" || test -f  "${source_relative}" || die "${source_relative} must be a directory/file"
 
   source_dirname="$(get_absolute_dir "$(dirname "${source_relative}")")"
   source_basename="${source_relative##*/}"
   SOURCE_ABSOLUTE="${source_dirname}/${source_basename}"
 
-  target_relative_dirname="$("$(dirname "${target_relative}")")"
+  target_relative_dirname="$(dirname "${target_relative}")"
   target_basename="${target_relative##*/}"
   with_sudo mkdir -p "${target_relative_dirname}"
   target_dirname="$(get_absolute_dir "${target_relative_dirname}")"
   TARGET_ABSOLUTE="${target_dirname}/${target_basename}"
 
-  [ "${SOURCE_ABSOLUTE}" != "${TARGET_ABSOLUTE}" ] || error "${0##*/}: source and target can not be identical name"
-  ! test -h "${TARGET_ABSOLUTE}" || [ "$(readlink "${TARGET_ABSOLUTE}")" != "${SOURCE_ABSOLUTE}" ] || exit 0 # nothing to do
+  [ "${SOURCE_ABSOLUTE}" != "${TARGET_ABSOLUTE}" ] || die "${TARGET_ABSOLUTE} source and target are identical"
+  ! test -h "${TARGET_ABSOLUTE}" || [ "$(realpath "${TARGET_ABSOLUTE}")" != "${SOURCE_ABSOLUTE}" ] || exit 0 # nothing to do
 
-  ! $force || with_sudo rm -rf "${TARGET_ABSOLUTE}" || error "${0##*/}: ${TARGET_ABSOLUTE} can't be removed"
+  ! $force || if with_sudo rm -rf "${TARGET_ABSOLUTE}"; then
+      Warning "${0##*/}:" "${TARGET_ABSOLUTE} removed"
+    else
+      die "${0##*/}:" "${TARGET_ABSOLUTE} can't be removed"
+    fi
 
-  ! test -w "${target_dirname}" || unset SUDO
+  ! test -w "${target_dirname}" || SUDO=""
 
   cd "${target_dirname}"
 
   source_remaining="${SOURCE_ABSOLUTE}"
   target_remaining="${TARGET_ABSOLUTE}"
 
-  set -x
   i=2
   common_part=""
-  source_part="$(get_value "${source_dirname}" $i)"
-  target_part="$(get_value "${target_dirname}" $i)"
+  source_part="$(get_value "${SOURCE_ABSOLUTE}" $i)"
+  target_part="$(get_value "${TARGET_ABSOLUTE}" $i)"
 
 
   while [ "${source_part}" = "${target_part}" ]; do
-    [ $i -ne 2 ] || break  # absolute with no common part
     common_part="${common_part}/${source_part}"
     i=$((i + 1))
-    source_part="$(get_value "${source_dirname}" $i)"
-    target_part="$(get_value "${target_dirname}" $i)"
-    source_remaining="$(echo "${source_dirname}" | sed "s|${common_part}||")"
-    target_remaining="$(echo "${target_dirname}" | sed "s|${common_part}||")"
+    source_part="$(get_value "${SOURCE_ABSOLUTE}" $i)"
+    target_part="$(get_value "${TARGET_ABSOLUTE}" $i)"
+    source_remaining="$(echo "${SOURCE_ABSOLUTE}" | sed "s|${common_part}||")"
+    target_remaining="$(echo "${TARGET_ABSOLUTE}" | sed "s|${common_part}||")"
   done
 
-  set +x
+  if [ ! "${common_part-}" ]; then
+    from="${SOURCE_ABSOLUTE}"
+    to="${TARGET_ABSOLUTE}"
+  elif [ "${source_dirname}" = "${target_dirname}" ] ; then
+    from="./${source_basename}"
+    to="${target_basename}"
+  else
+    source_basename="${source_remaining##*/}"
+    target_basename="${target_remaining##*/}"
+    source_remaining="$(echo "${source_remaining}" | sed "s|/${source_basename}||")"
+    target_remaining="$(echo "${target_remaining}" | sed "s|/${target_basename}||")"
 
-  echo "common_part: ${common_part}"
-  echo "source: ${source_remaining}"
-  echo "target: ${target_remaining}"
+    i=2
+    prepend_to_source=""
+    target_part="$(get_value "${target_remaining}" $i)"
+    while [ "${target_part}" != "" ]; do
+      prepend_to_source="../${prepend_to_source}"
+      i=$((i + 1))
+      target_part="$(get_value "${target_remaining}" $i)"
+    done
 
-  echo with sudo ln -s "${source_remaining}" "${target_remaining}"
+    i=2
+    append_to_source=""
+    source_part="$(get_value "${source_remaining}" $i)"
+    while [ "${source_part}" != "" ]; do
+      append_to_source="${append_to_source:+${append_to_source}/}${source_part}"
+      i=$((i + 1))
+      source_part="$(get_value "${source_remaining}" $i)"
+    done
 
+    from="${prepend_to_source}${append_to_source:+${append_to_source}/}${source_basename}"
+    to="${target_basename}"
+  fi
+
+  ${echo} with_sudo ln -s "${from}" "${to}" || die "symlink can not be created"
+  FromTo ln "${from}" "${to}"
 }
 
 main "$@"

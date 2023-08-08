@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+set -eu
+
 #######################################
 # generate jetbrains variables
 # Arguments:
 #  None
 #######################################
-generate_jetbrains() {
+generate() {
   local application config properties tmp vmoptions
 
   : "${JETBRAINS?}"
@@ -51,6 +53,25 @@ generate_jetbrains() {
 }
 
 #######################################
+# create plist
+# Arguments:
+#  None
+#######################################
+plist(){
+  local agent filename plist
+
+  $MACOS || return 0
+
+  filename="com.mnopi.jetbrains.plist"
+  plist="${SHRC_FILES}/${filename}"
+  agent="${HOME}/Library/LaunchAgents/${filename}"
+
+  sed -i "" "s|<string>=.*|<string>$(realpath "$0")</string>|" "${plist}"
+  relative "${plist}" "${agent}"
+  launchctl print-disabled user/501 | grep "\"${filename%.*}\" => false" &>/dev/null || launchctl load -w "${agent}"
+}
+
+#######################################
 # description
 # Globals:
 #   JETBRAINS_APPLICATIONS
@@ -60,6 +81,7 @@ generate_jetbrains() {
 #######################################
 setenv() {
     local application
+
     for application in ${JETBRAINS_APPLICATIONS?}; do
       launchctl setenv "${application^^}_PROPERTIES" "$(eval echo \$"${application^^}_PROPERTIES")"
       launchctl setenv "${application^^}_VM_OPTIONS" "$(eval echo \$"${application^^}_VM_OPTIONS")"
@@ -74,11 +96,20 @@ setenv() {
 #  None
 #######################################
 main() {
-    . /etc/profile
-    generate_jetbrains
-    . "${JETBRAINS_GENERATED?}"
+  local arg func=setenv
 
-    setenv
+  . /etc/profile
+  generate
+  . "${JETBRAINS_GENERATED}"
+
+  for arg; do
+    case "${arg}" in
+      -h|--help) func=help ;;
+      plist) func=plist ;;
+    esac
+  done
+
+  "${func}" "$@"
 }
 
 main "$@"

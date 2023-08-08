@@ -146,6 +146,10 @@ export SHRC_CONFIG="${SHRC}/config"
 # SHRC generated color bin directory
 #
 export SHRC_GENERATED_COLOR="${SHRC}/color"
+# SHRC files directory
+#
+export SHRC_FILES="${SHRC}/files"
+
 # shrc shell for commands hooks (bash or zsh)
 #
 SHRC_HOOKS_SHELL="$(basename "${BASH:-${ZSH_NAME}}" | sed 's/^sh$/bash/')"

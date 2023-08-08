@@ -1,6 +1,10 @@
 # shrc
 shell rc
 
+## jetbrains
+
+jetbrains plist to start the LaunchAgent
+
 ## Old in mnopi
 
 /Users/j5pu/Archive/binsh/.bashrc

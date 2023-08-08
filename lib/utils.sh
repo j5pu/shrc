@@ -122,7 +122,7 @@ path_add() {
   _path_add_value="$(eval echo "\$${2:-PATH}")"
   _path_add_value="${_path_add_value:+:${_path_add_value}}"
   [ "${2:-PATH}" != "MANPATH" ] || [ "${_path_add_value-}" ] || _path_add_value=":"
-  _path_add_real="$("${BBIN_PREFIX}/bin/pwd_p" "${1:-${PWD}}" )"
+  _path_add_real="$("${SHRC_BIN?}/pwd_p" "${1:-${PWD}}" )"
   eval "export ${2:-PATH}='${_path_add_real}${_path_add_value}'"
   unset _path_add_value _path_add_real
 }
@@ -189,7 +189,7 @@ path_append() {
   elif [ "${_path_append_value-}" ]; then
     _path_append_first=":"
   fi
-  _path_append_real="$("${BBIN_PREFIX}/bin/pwd_p" "${1:-${PWD}}")"
+  _path_append_real="$("${SHRC_BIN?}/pwd_p" "${1:-${PWD}}")"
   eval "export ${2:-PATH}='${_path_append_value}${_path_append_first-}${_path_append_real}${_path_append_last-}'"
   unset _path_append_first _path_append_last _path_append_real _path_append_value
 }
@@ -231,7 +231,7 @@ path_dedup() {
 #######################################
 path_in() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_in_add=":"
-  _path_in_real="$("${BBIN_PREFIX}/bin/pwd_p" "${1:-${PWD}}")"
+  _path_in_real="$("${SHRC_BIN}/pwd_p" "${1:-${PWD}}")"
   case ":$(eval echo "\$${2:-PATH}")${_path_in_add-}" in
     *:"${_path_in_real}":*) unset _path_in_add _path_in_real; return 0 ;;
     *) unset _path_in_add _path_in_real; return 1 ;;
@@ -250,12 +250,24 @@ path_in() {
 #######################################
 path_pop() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_pop_strip=":"
-  _path_pop_real="$("${BBIN_PREFIX}/bin/pwd_p" "${1:-${PWD}}")"
+  _path_pop_real="$("${SHRC_BIN}/pwd_p" "${1:-${PWD}}")"
   _path_pop_value="$(eval echo "\$${2:-PATH}" | sed 's/:$//' | tr ':' '\n' | \
     grep -v "^${_path_pop_real}$" | tr '\n' ':' | sed "s|${_path_pop_strip-}$||")"
   [ "${_path_pop_value}" != ":" ] || _path_pop_value=""
   eval "export ${2:-PATH}='${_path_pop_value}'"
   unset _path_pop_real _path_pop_strip _path_pop_value
+}
+
+source_dir() {
+  test -n "$(find "$1" \( -type f -or -type l \) -not -name ".*")" || return 0
+  for _rc_source in "$1"/*; do
+    case "${_rc_source##*/}" in
+      .DS_Store | .gitkeep | .keep | .localized) continue ;;
+    esac
+    . "${_rc_source}"
+  done
+
+  unset _rc_source
 }
 
 _SHRC_UTILS_SH_SOURCED=1

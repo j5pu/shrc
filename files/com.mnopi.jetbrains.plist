@@ -7,7 +7,6 @@
         <key>ProgramArguments</key>
         <array>
             <string>/Users/j5pu/shrc/bin/jetbrains</string>
-            <string>setenv</string>
         </array>
         <key>RunAtLoad</key>
         <true/>

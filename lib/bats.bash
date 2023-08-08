@@ -95,6 +95,37 @@ export INFOPATH
 export MANPATH
 
 #######################################
+# assert -h, --help, help with $HELPS_LINE
+# Globals:
+#   HELPS_LINE
+# Arguments:
+#   1   HELPS_LINE
+# Examples:
+# @test "assert::helps starts Docker daemon if not running" {
+#  ${BATS_TEST_DESCRIPTION}
+#}
+#
+# @test "assert::helps starts Docker daemon if not running" {
+#  bats::success
+#}
+# setup_file() { HELPS_LINE="foo" }
+#@test "assert::helps" {
+#  bats::success
+#}
+#######################################
+assert::helps() {
+  local helps_line option run
+  run="$(bats::basename)"
+  helps_line="${HELPS_LINE:-$@}"
+  assert [ -n "${helps_line}" ]
+  for option in -h --help help; do
+    run "${run}" "${option}"
+    assert_success
+    assert_line "${helps_line}"
+  done
+}
+
+#######################################
 # creates $BATS_ARRAY array from $BATS_TEST_DESCRIPTION or argument
 # Globals:
 #   BATS_ARRAY
@@ -233,6 +264,28 @@ skip::if::action() {
 }
 
 #######################################
+# skip test if var is not defined
+# Globals:
+#   var
+# Arguments:
+#  None
+#######################################
+skip::if::not::command() {
+  has "$1" || skip "${1}: not installed"
+}
+
+#######################################
+# skip test if var is not defined
+# Globals:
+#   var
+# Arguments:
+#  None
+#######################################
+skip::if::not::var() {
+  [ "${!1-}" ] || skip "Missing: ${1}"
+}
+
+#######################################
 # clone bats-core and bats libs
 # Globals:
 #   BATS_EXECUTABLE
@@ -285,26 +338,6 @@ _bats_pull() {
   for i in ${BATS_REPOS}; do
     git -C "${BATS_SHARE}/${i}" pull --quiet
   done
-}
-
-#######################################
-# export bats functions
-# Globals:
-#   ${BATS_FUNCTIONS[@]}
-#   BASH_SOURCE
-#   BATS_FUNCTIONS
-#   BATS_SHARE
-# Arguments:
-#  None
-#######################################
-_functions() {
-  mapfile -t BATS_FUNCTIONS < <(
-    filefuncs "${BATS_SHARE}"/bats-*/src/*.bash \
-      && filefuncs "${BASH_SOURCE[0]}"
-  )
-
-  # bashsupport disable=BP2001
-  export -f "${BATS_FUNCTIONS[@]}" && funcexported assert && funcexported bats::env
 }
 
 #######################################
@@ -361,6 +394,26 @@ _docker() {
       fi
     fi
   fi
+}
+
+#######################################
+# export bats functions
+# Globals:
+#   ${BATS_FUNCTIONS[@]}
+#   BASH_SOURCE
+#   BATS_FUNCTIONS
+#   BATS_SHARE
+# Arguments:
+#  None
+#######################################
+_functions() {
+  mapfile -t BATS_FUNCTIONS < <(
+    filefuncs "${BATS_SHARE}"/bats-*/src/*.bash \
+      && filefuncs "${BASH_SOURCE[0]}"
+  )
+  export_funcs_path "${BASH_SOURCE[0]}"
+  # bashsupport disable=BP2001
+  export -f "${BATS_FUNCTIONS[@]}" && funcexported assert && funcexported bats::env
 }
 
 #######################################
