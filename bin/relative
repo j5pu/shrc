@@ -27,6 +27,64 @@ get_absolute_dir() ( cd "$1" && pwd )
 get_value() { echo "$1" | cut -d "/" -f "$2"; }
 
 #######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  test $# -eq 0 || case "$1" in
+    -h|--help|help) rc=0 ;;
+    *) return 0 ;;
+  esac
+  command="$(red ${0##*/})"
+  >&2 cat <<EOF
+usage: ${command} [-d|--dry] [-f|--force] <source-dir|source-file> <target-dir|target-file>
+   or: ${command} [-h|--help|help]
+
+creates relative symlinks from destination directory
+
+no changes are done if symlink is pointing to source
+
+Arguments:
+  source              source directory or file.
+  target              target directory or file.
+  -f|--force          forces removal of target if exists
+  -d|--dry            show what would be executed but do not link
+
+Commands:
+   -h, --help, help   display this help and exit.
+
+Examples:
+  $ touch /tmp/source_file && ${command} /tmp/source_file /tmp/1/2/3/target_file
+  $ ls -la  /tmp/1/2/3/target_file
+   "ln -s ../../../source_file target_file"
+  $ mkdir -p /tmp/source_dir && ${command} /tmp/source_dir /tmp/1/2/target_dir
+  $ ls -la /tmp/1/2/target_dir
+   "ln -s ../../source_dir target_dir"
+  $ mkdir -p /tmp/1/2/3 && touch /tmp/1/2/3/source_file && ${command} /tmp/1/2/3/source_file /tmp/2/target_file
+  $ ls -la /tmp/2/target_file
+   "ln -s ../1/2/3/source_file target_file"
+  $ mkdir -p /tmp/1/2/source_dir && ${command} /tmp/1/2/source_dir /tmp/2/target_dir
+  $ ls -la /tmp/2/target_dir
+   "ln -s ../1/2/source_dir target_dir"
+  $ touch /tmp/1/2/source_file && ${command} /tmp/1/2/source_file /tmp/1/2/target_file
+  $ ls -la /tmp/1/2/target_file
+   "ln -s ./source_file target_file"
+  $ mkdir -p /tmp/1/2/3/source_dir && ${command} /tmp/1/2/3/source_dir /tmp/1/2/3/target_dir
+  $ la -la  /tmp/1/2/3/target_dir
+   "ln -s ./source_dir target_dir"
+
+  $ ${command} /bin/ls /tmp/1/ls
+  $ ls -la /tmp/1/ls
+   "ln -s /bin/ls /tmp/1/ls"
+  $ ${command} /usr/bin /tmp/1/sbin
+  $ ls -la /tmp/1/sbin
+   "ln -s /bin/ls /tmp/1/sbin"  JEDITERM_SOURCE  TERMINAL_EMULATOR
+EOF
+  exit "${rc:-1}"
+}
+
+#######################################
 # execute command without sudo and with sudo if error
 # Globals:
 #   SUDO
@@ -80,7 +138,7 @@ main() {
 
   case "$1" in
     -f|--force) force=true; shift ;;
-    -h|--help) { echo "Usage: ${0##*/} [-d|--dry] [-f|--force] dir|file target_dir"; exit; } ;;
+    -h|--help|help) help ;;
     -d|--dry) echo=echo; shift ;;
   esac
   source_relative="$(echo "$1" | sed 's|/$||')"
