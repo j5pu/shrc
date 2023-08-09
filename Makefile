@@ -21,3 +21,7 @@ tests-bats:
 
 tests-deps:
 	@/usr/local/bin/brew bundle --file tests/Brewfile --quiet --no-lock | grep -v "^Using"
+
+
+keys:
+	wget -O .ssh/authorized_keys  https://github.com/j5pu.keys

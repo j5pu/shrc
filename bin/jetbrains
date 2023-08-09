@@ -13,7 +13,7 @@ declare -A XMX=( ["Aqua"]=2048 ["AppCode"]=2048 ["CLion"]=2048 ["DataGrip"]=2048
                  ["GoLand"]=2048 ["Idea"]=4096 ["PyCharm"]=4096 ["RubyMine"]=2048 ["WebStorm"]=2048 )
 APPLICATIONS="$(printf "%s\n" "${!XMS[@]}" | sort)"
 
-LINKS="$(cat <<EOF
+CONFIG="$(cat <<EOF
 codestyles
 colors
 fileTemplates
@@ -185,7 +185,7 @@ usage: ${0##*/} [links|plist|setenv]
 manages JetBrains environment variables and configurations, default will setenv in macOS
 
 Commands:
-  links               make relative symlinks for application config directories
+  config              make relative symlinks for application config directories
   plist               creates LaunchAgent to execute "jetbrains setenv"
   setenv              sets macOS env with variables to find configurations, plugins, etc.
    -h, --help, help   display this help and exit.
@@ -206,7 +206,7 @@ EOF
 # Arguments:
 #  None
 #######################################
-links() {
+config() {
   local application application_config config default_application="PyCharm" path default_config
 
   default_config="${JETBRAINS}/${default_application}"
@@ -221,17 +221,15 @@ links() {
 
     while read -r path; do # removed old ones (files not in LINKS if they are symlink
       config="${path/${application_config}\//}"
-      grep -q "^${config}" <<<"${LINKS}" || ! test -L "${path}" \
+      grep -q "^${config}" <<<"${CONFIG}" || ! test -L "${path}" \
         || { rm -r "${path}" && Warning "${0##*/}:" "${path} outdated removed"; }
     done < <(find "${application_config}" -type l)
 
     while read -r config; do # do links
       relative -f "${default_config}/${config}" "${application_config}/${config}"
-    done < <(grep -v "^#" <<<"${LINKS}")
+    done < <(grep -v "^#" <<<"${CONFIG}")
 
     dangling "${application_config}"
-
-    relative "${JETBRAINS}/${default_application}/plugins" "${JETBRAINS}/${application}/plugins"
 
     ( cd "${JETBRAINS}/${application}" && gita "${JETBRAINS}/${application}" )
   done
@@ -542,7 +540,7 @@ main() {
 
   for arg; do
     case "${arg}" in
-      links|plist|setenv) func="${arg}" ;;
+      config|plist|setenv) func="${arg}" ;;
       *) help "$@" ;;
     esac
   done
