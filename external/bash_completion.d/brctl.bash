@@ -55,6 +55,4 @@ _brctl_macos() {
 #   - Put spanish
 #   - check applications
 
-[ "$(complete -p brctl)" != "complete -o default -F _brctl brctl" ] || complete -r brctl
-
 complete -F _brctl_macos brctl

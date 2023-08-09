@@ -2,8 +2,8 @@
 
 isjedi || return 0
 
-infopathadd "${SUPERPROJECT}/share/info"
-manpathadd "${SUPERPROJECT}/share/man"
-pathadd "${SUPERPROJECT}/bin"
-pythonpathadd "${SUPERPROJECT}" "${SUPERPROJECT}/src"
-! test -f "${SUPERPROJECT}/venv/bin/activate" || . "${SUPERPROJECT}/venv/bin/activate"
+infopathadd "${JEDI_TOP}/share/info"
+manpathadd "${JEDI_TOP}/share/man"
+pathadd "${JEDI_TOP}/bin"
+pythonpathadd "${JEDI_TOP}" "${JEDI_TOP}/src"
+! test -f "${JEDI_TOP}/venv/bin/activate" || . "${JEDI_TOP}/venv/bin/activate"

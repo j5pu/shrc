@@ -1,16 +1,12 @@
 # shellcheck shell=bash
 
-# true (bool) if BASH greater or equal to 4
-# sh as bash (3) exported functions are not seen as exported
-# sh as bash (3) has arrays
-# Exported arrays are not available in a new shell, but they are in a subshell
-BASH4=false
-[ "${BASH_VERSINFO[0]:-0}" -lt 4 ] || BASH4=true
+# ls ./* does not expand .*, that is dotglob)
+# ls ./* does not give error if no files, that is failglob)
 
 set -o errtrace functrace
 
 if $BASH4; then
-  shopt -s inherit_errexit
+  shopt -s inherit_errexit extglob globstar gnu_errfmt
 
   enable -f mypid enable_mypid
   enable -f truefalse false
@@ -21,6 +17,7 @@ if $BASH4; then
     enable -f "$i" "$i" 2>/dev/null
   done
 fi
+
 [ "${PS1-}" ] || return 0
 
 # https://www.digitalocean.com/community/tutorials/how-to-use-bash-history-commands-and-expansions-on-a-linux-vps
@@ -42,5 +39,5 @@ stty -ixon 2>/dev/null  # stty: stdout appears redirected, but stdin is the cont
 
 # https://zwischenzugs.com/2019/04/03/eight-obscure-bash-options-you-might-want-to-know-about/
 #
-shopt -s cdable_vars checkwinsize dotglob execfail histappend nocaseglob nocasematch
-! $BASH4 || shopt -s autocd direxpand dirspell globstar progcomp_alias
+shopt -s cdable_vars cdspell checkwinsize histappend progcomp
+! $BASH4 || shopt -s autocd direxpand dirspell progcomp_alias

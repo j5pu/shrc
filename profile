@@ -1,5 +1,4 @@
-# bashsupport disable=LongLine
-# shellcheck shell=sh disable=SC3028
+# shellcheck shell=sh disable=SC2034,SC3028
 
 # System-wide .profile for sh(1)
 #
@@ -54,8 +53,8 @@ export SHRC_CONFIG="${SHRC}/config"
 export SHRC_EXTERNAL="${SHRC}/external"
 # SHRC external completions compat directory. BASH_COMPLETION_USER_DIR
 # "Dinamically loaded by __load_completion()/_completion_loader() functions,
-# they add 'completions' to $BASH_COMPLETION_USER_DIR"
-export SHRC_EXTERNAL_COMPLETION_D="${SHRC_EXTERNAL}/bash_completion.d"; export BASH_COMPLETION_USER_DIR="${SHRC_EXTERNAL_COMPLETION_D}"
+export SHRC_EXTERNAL_COMPLETION_D="${SHRC_EXTERNAL}/bash_completion.d"
+export BASH_COMPLETION_USER_DIR="${SHRC_EXTERNAL_COMPLETION_D}"
 # SHRC external custom dir for other repositories
 #
 export SHRC_EXTERNAL_PROFILE_D="${SHRC_EXTERNAL}/profile.d"
@@ -146,8 +145,8 @@ isjedi() {
   [ "${TERMINAL_EMULATOR-}" = "JetBrains-JediTerm" ] || [ "${TTY-}" = "not a tty" ] || return
   # Set to top level of project if running in run or in jediterm
   #
-  export SUPERPROJECT
-  SUPERPROJECT="$(git rev-parse --show-superproject-working-tree --show-toplevel 2>/dev/null | head -1)"
+  export JEDI_TOP
+  JEDI_TOP="$(git rev-parse --show-superproject-working-tree --show-toplevel 2>/dev/null | head -1)"
 }
 #######################################
 # # Prepend paths to MANPATH
@@ -216,20 +215,25 @@ source_files() {
     fi
 done
 }
+#######################################
+# source files if bash4 and interactive, i.e.: completions
+# Arguments:
+#  user     default $GIT or $USER
+#######################################
+source_files_if_bash4_and_ps1() { ! $BASH4 || [ ! "${PS1-}" ] || source_files "$@"; }
 
 # source: posix (common to all shells)
 #
-source_files "${SHRC_PROFILE_D}"/??*.d/*.sh
-source_files "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*.sh
-source_files "${SHRC_EXTERNAL_PROFILE_D}"/*.sh
+source_files "${SHRC_PROFILE_D}"/??*.d/*.sh "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*.sh "${SHRC_EXTERNAL_PROFILE_D}"/*.sh
 
 # source: bash and zsh hooks
 #
 if [ "${SHRC_HOOKS_SHELL-}" ]; then
-  source_files "${SHRC_PROFILE_D}"/??*.d/*."${SHRC_HOOKS_SHELL}"
-  source_files "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*."${SHRC_HOOKS_SHELL}"
-  source_files "${SHRC_EXTERNAL_PROFILE_D}"/*."${SHRC_HOOKS_SHELL}"
+  source_files "${SHRC_PROFILE_D}"/??*.d/*."${SHRC_HOOKS_SHELL}" \
+    "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*."${SHRC_HOOKS_SHELL}" "${SHRC_EXTERNAL_PROFILE_D}"/*."${SHRC_HOOKS_SHELL}"
 fi
+
+source_files_if_bash4_and_ps1 "${SHRC_COMPLETION_D}"/* "${SHRC_EXTERNAL_COMPLETION_D}"/*
 
 ! cmd export_all_functions || export_all_functions
 

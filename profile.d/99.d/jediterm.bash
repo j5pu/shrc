@@ -2,4 +2,5 @@
 
 isjedi || return 0
 
-load_completion "${SUPERPROJECT}"
+# Sources completions in top directory
+source_files_if_bash4_and_ps1  "${JEDI_TOP}"

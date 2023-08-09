@@ -1,4 +1,4 @@
-# shellcheck shell=sh
+# shellcheck shell=sh disable=SC3045
 
 [ "${PS1-}" ] || return 0
 
