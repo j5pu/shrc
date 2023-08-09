@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -eu
+
+SHRC="$(cd "$(dirname "$0")" && pwd)"
+export SHRC_PREFIX="${SHRC%/*}"
+. "${SHRC}/profile"
+
+profile() {
+  "${SUDO}" tee /etc/profile > /dev/null <<EOF
+# System-wide .profile for sh(1)
+# Updated by "$0" on: $(date)
+export SHRC_PREFIX="${SHRC_PREFIX}"
+if test -f "${SHRC_PREFIX}/shrc/profile"; then
+  SHRC_SHOW_FILES=1 . "${SHRC_PREFIX}/shrc/profile"
+else
+  if [ -x /usr/libexec/path_helper ]; then
+        eval \`/usr/libexec/path_helper -s\`
+  fi
+
+  if [ "\${BASH-no}" != "no" ]; then
+        [ -r /etc/bashrc ] && . /etc/bashrc
+  fi
+fi
+EOF
+}
+
+main() {
+  profile
+}
+
+main "$@"

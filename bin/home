@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# User HOME (because of sudoers !env_reset)
+
+#######################################
+# get user home
+# Arguments:
+#  user     default $GIT or $USER
+#######################################
+# shellcheck disable=SC2016
+home() { ${SUDO:+${SUDO} -u} "${1-${GIT}}" sh -c 'echo "${HOME}"'; }
+
+eval echo ~"${1:-$(user)}"

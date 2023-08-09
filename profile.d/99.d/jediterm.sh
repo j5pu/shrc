@@ -1,14 +1,9 @@
 # shellcheck shell=sh
 
-# TODO: completions but do not load twice, manpath and infopath
+isjedi || return 0
 
-{ [ "${TERMINAL_EMULATOR}" = "JetBrains-JediTerm" ] || [ "${TTY}" = "not a tty" ]; } || return 0  # JetBrains run and term
-_top="$(git rev-parse --show-toplevel 2>/dev/null)"
-[ "${_top-}" ] || { unset _top; return 0; }
-
-manpathadd "${_top}/share/man"
-pathadd "${_top}/bin"
-pythonpathadd "${_top}" "${_top}/src"
-! test -f "${_top}/venv/bin/activate" || . "${_top}/venv/bin/activate"
-
-unset _top
+infopathadd "${SUPERPROJECT}/share/info"
+manpathadd "${SUPERPROJECT}/share/man"
+pathadd "${SUPERPROJECT}/bin"
+pythonpathadd "${SUPERPROJECT}" "${SUPERPROJECT}/src"
+! test -f "${SUPERPROJECT}/venv/bin/activate" || . "${SUPERPROJECT}/venv/bin/activate"

@@ -1,16 +1,22 @@
 # shellcheck shell=bash
+echo hola
 
 $MACOS || return 0
+
 #######################################
-# alias-del completion
+# brctl macOS completion
+# Globals:
+#   COMPREPLY
+#   cur
+#   cword
+#   words
 # Arguments:
-#   1
-#   3
+#  None
 # Returns:
 #   0 ...
-#   1 ...
+#   <unknown> ...
 #######################################
-_brctl() {
+_brctl_macos() {
   _init_completion -n :=/ || return
   local files=false w=()
 
@@ -44,4 +50,11 @@ _brctl() {
   ! $files || { _filedir; _filedir -d; }
 }
 
-complete -F _brctl brctl
+# FIXME: completions does not load from external and I doubt from the other
+#   finish with the install and move jetbrains a jetbrains. Put jetbrains en el installer?
+#   - Put spanish
+#   - check applications
+
+[ "$(complete -p brctl)" != "complete -o default -F _brctl brctl" ] || complete -r brctl
+
+complete -F _brctl_macos brctl

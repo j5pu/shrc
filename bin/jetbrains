@@ -2,13 +2,10 @@
 
 set -eu
 
-[ "${DEFAULT_HOME-}" ] || { set +u; . /etc/profile; set -u; }
-
-JETBRAINS="${DEFAULT_HOME?}/JetBrains"
+JETBRAINS="${SHRC_PREFIX?}/JetBrains"
 JETBRAINS_GENERATED="${SHRC_PROFILE_D_GENERATED_D?}/jetbrains.sh"
 declare -A XMS=( ["Aqua"]=256 ["AppCode"]=256 ["CLion"]=256 ["DataGrip"]=256 ["DataSpell"]=256 ["Gateway"]=128
                  ["GoLand"]=256 ["Idea"]=512 ["PyCharm"]=512 ["RubyMine"]=256 ["WebStorm"]=256 )
-
 declare -A XMX=( ["Aqua"]=2048 ["AppCode"]=2048 ["CLion"]=2048 ["DataGrip"]=2048 ["DataSpell"]=2048 ["Gateway"]=512
                  ["GoLand"]=2048 ["Idea"]=4096 ["PyCharm"]=4096 ["RubyMine"]=2048 ["WebStorm"]=2048 )
 APPLICATIONS="$(printf "%s\n" "${!XMS[@]}" | sort)"

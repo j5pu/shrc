@@ -61,7 +61,7 @@ __real() {
 }
 
 case "${SH}" in
-  ash|bash|busybox|dash|ksh|sh)
+  -ash|ash|-bash|bash|-busybox|busybox|-dash|dash|-ksh|ksh|-sh|sh)
     if [ "${BASH_SOURCE-}" ]; then
       __bash
     else
