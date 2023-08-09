@@ -14,10 +14,9 @@ if $BASH4; then
     enable -f mypid enable_mypid
     enable -f truefalse false
     enable -f truefalse true
-    for i in accept basename csv cut dirname dsv fdflags finfo getconf \
-      head id ln logname mkdir mkfifo mktemp pathchk print printenv \
-      push rm rmdir seq setpgid sleep strftime sync tee tty uname unlink whoami; do
-      # realpath stat
+    for i in accept csv dsv fdflags finfo \
+      id logname mkfifo mktemp pathchk print printenv \
+      push setpgid sleep strftime sync tee tty whoami; do
         enable -f "$i" "$i" 2>/dev/null
     done
 fi

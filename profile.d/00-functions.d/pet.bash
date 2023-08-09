@@ -32,4 +32,6 @@ pet_select() {
   READLINE_POINT=${#buffer}
 }
 
-bind -x '"\C-x\C-r": pet_select'
+if [ -t 1 ]; then
+  bind -x '"\C-x\C-r": pet_select' 2>/dev/null
+fi

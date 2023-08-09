@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Find dangling symlinks
+#
+find "${1:-.}" -type l ! -exec test -e {} \; -print

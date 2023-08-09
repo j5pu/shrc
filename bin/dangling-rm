@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Find dangling symlinks
+#
+dangling "$@" | xargs -I "{}" rm -v "{}"

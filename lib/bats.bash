@@ -368,7 +368,7 @@ _docker() {
 
   if isaction || ! has docker; then
     BATS_LOCAL=1
-  elif test $BATS_LOCAL -eq 0; then
+  elif test "${BATS_LOCAL}" -eq 0; then
     if [ ! "${BATS_DOCKER_CONTEXT-}" ]; then
       if ismacos; then
         BATS_DOCKER_CONTEXT="default"

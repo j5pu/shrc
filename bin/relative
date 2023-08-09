@@ -118,6 +118,7 @@ with_sudo() {
 #   $ mkdir -p /tmp/1/2/source_dir && relative /tmp/1/2/source_dir /tmp/2/target_dir
 #   $ ls -la /tmp/2/target_dir
 #     "ln -s ../1/2/source_dir target_dir"
+
 #   $ touch /tmp/1/2/source_file && relative /tmp/1/2/source_file /tmp/1/2/target_file
 #   $ ls -la /tmp/1/2/target_file
 #     "ln -s ./source_file target_file"
@@ -129,7 +130,7 @@ with_sudo() {
 #     "ln -s /bin/ls /tmp/1/ls"
 #   $ relative /usr/bin /tmp/1/sbin
 #   $ ls -la /tmp/1/sbin
-#     "ln -s /bin/ls /tmp/1/sbin"  JEDITERM_SOURCE  TERMINAL_EMULATOR
+#     "ln -s /usr/bin /tmp/1/sbin"  JEDITERM_SOURCE  TERMINAL_EMULATOR
 #######################################
 main() {
   SUDO="$(command -v sudo || true)"
@@ -138,8 +139,8 @@ main() {
 
   case "$1" in
     -f|--force) force=true; shift ;;
-    -h|--help|help) help ;;
-    -d|--dry) echo=echo; shift ;;
+    -h|--help|help) help "$@";;
+    -d|--dry) echo="echo"; shift ;;
   esac
   source_relative="$(echo "$1" | sed 's|/$||')"
   target_relative="$(echo "$2" | sed 's|/$||')"
