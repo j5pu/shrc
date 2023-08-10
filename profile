@@ -42,7 +42,7 @@ export SHRC="${SHRC_PREFIX}/shrc"
 #
 export SHRC_BIN="${SHRC}/bin"
 # SHRC external completions compat directory. BASH_COMPLETION_USER_DIR
-# "Dinamically loaded by __load_completion()/_completion_loader() functions,
+# "Dynamically loaded by __load_completion()/_completion_loader() functions,
 # they add 'completions' to $BASH_COMPLETION_USER_DIR"
 export SHRC_COMPLETION_D="${SHRC}/bash_completion.d"
 # Application configurations that can be configured with global variables and do not contain secrets.
@@ -51,10 +51,16 @@ export SHRC_CONFIG="${SHRC}/config"
 # SHRC external custom dir for other repositories, completions and profile.d
 #
 export SHRC_EXTERNAL="${SHRC}/external"
+# SHRC external bin shims dir for other repositories
+# Subdirectories are added to path
+export SHRC_EXTERNAL_BIN="${SHRC_EXTERNAL}/bin"
 # SHRC external completions compat directory. BASH_COMPLETION_USER_DIR
-# "Dinamically loaded by __load_completion()/_completion_loader() functions,
+# "Dynamically loaded by __load_completion()/_completion_loader() functions,
 export SHRC_EXTERNAL_COMPLETION_D="${SHRC_EXTERNAL}/bash_completion.d"
 export BASH_COMPLETION_USER_DIR="${SHRC_EXTERNAL_COMPLETION_D}"
+# SHRC external man shims dir for other repositories
+# Subdirectories are added to manpath
+export SHRC_EXTERNAL_MAN="${SHRC_EXTERNAL}/share/man"
 # SHRC external custom dir for other repositories
 #
 export SHRC_EXTERNAL_PROFILE_D="${SHRC_EXTERNAL}/profile.d"
@@ -135,7 +141,7 @@ infopathadd() {
 #######################################
 # check is running configuration or running in jetbrains terminal and sets project super top variable
 # Globals:
-#   SUPERPROJECT
+#   JEDI_TOP
 # Arguments:
 #   1
 # Returns:
