@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="bashsupport-pro.project">
+    <scriptLibraries>
+      <library name="bats">
+        <sources>
+          <source path="$PROJECT_DIR$/../.local/share/bats-support/src" recursive="true" external="true" />
+          <source path="$PROJECT_DIR$/../.local/share/bats-file/src" recursive="true" external="true" />
+          <source path="$PROJECT_DIR$/../.local/share/bats-assert/src" recursive="true" external="true" />
+        </sources>
+        <targets>
+          <target path="bin" recursive="true" />
+        </targets>
+      </library>
+      <library name="shrc">
+        <sources>
+          <source path="$PROJECT_DIR$/profile.d" recursive="true" external="true" />
+          <source path="$PROJECT_DIR$/lib" recursive="true" external="true" />
+          <source path="$PROJECT_DIR$/external" recursive="true" external="true" />
+        </sources>
+        <targets>
+          <target path="bin" recursive="true" />
+        </targets>
+      </library>
+    </scriptLibraries>
     <globalVariables>
-      <var name="cword" />
-      <var name="words" />
       <var name="cur" />
     </globalVariables>
   </component>

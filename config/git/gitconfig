@@ -39,9 +39,9 @@
 [core]
   autocrlf = input
   editor = vi
-  excludesFile = 'echo "${GIT_TEMPLATE_DIR}/info/exclude"'
+  #excludesFile = 'echo "${GIT_TEMPLATE_DIR}/info/exclude"'
   filemode = true
-  hooksPath = 'echo ${GIT_TEMPLATE_DIR}/hooks'
+  #hooksPath = 'echo ${GIT_TEMPLATE_DIR}/hooks'
   ignorecase = true
   logallrefupdates = true
   precomposeunicode = true

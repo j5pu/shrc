@@ -1,5 +1,4 @@
 # shellcheck shell=bash
-echo hola
 
 $MACOS || return 0
 

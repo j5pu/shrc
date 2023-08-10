@@ -1,4 +1,4 @@
 # shellcheck shell=sh
 
-export DIRENV_CONFIG="${SHRC_CONFIG}/direnv"
+export STARSHIP_CONFIG="${SHRC_CONFIG}/starship/config.toml"
 
