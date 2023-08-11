@@ -6,6 +6,9 @@
 set -o errtrace functrace
 
 if $BASH4; then
+  # Shared array to copy array used by cparray(), getkey(), getvalue() and inarray()
+  #
+  declare -Axg _ARRAY
   shopt -s inherit_errexit extglob globstar gnu_errfmt
 
   enable -f mypid enable_mypid
@@ -16,6 +19,10 @@ if $BASH4; then
     push setpgid sleep strftime sync tee tty whoami; do
     enable -f "$i" "$i" 2>/dev/null
   done
+else
+  # Shared array to copy array used by cparray(), getkey(), getvalue() and inarray()
+  #
+  declare -p _ARRAY &>/dev/null || declare -axg _ARRAY
 fi
 
 [ "${PS1-}" ] || return 0

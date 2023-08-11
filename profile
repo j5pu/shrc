@@ -115,100 +115,6 @@ else
 fi
 
 #######################################
-# check if command exits
-# Arguments:
-#  command
-#######################################
-cmd() { command -v "${1}" >/dev/null; }
-#######################################
-# # Prepend paths to INFOPATH
-# Globals:
-#   PATH
-# Arguments:
-#   1
-# Returns:
-#   0 ...
-#######################################
-infopathadd() {
-  for arg; do
-    test -d "${arg}" || continue
-    case ":${INFOPATH}:"  in
-      *":${arg}:"*) continue ;;
-    esac
-    export INFOPATH="${arg}${INFOPATH:+:"${INFOPATH}"}"
-  done
-}
-#######################################
-# check is running configuration or running in jetbrains terminal and sets project super top variable
-# Globals:
-#   JEDI_TOP
-# Arguments:
-#   1
-# Returns:
-#   0 ...
-#######################################
-isjedi() {
-  [ "${TERMINAL_EMULATOR-}" = "JetBrains-JediTerm" ] || [ "${TTY-}" = "not a tty" ] || return
-  # Set to top level of project if running in run or in jediterm
-  #
-  export JEDI_TOP
-  JEDI_TOP="$(git rev-parse --show-superproject-working-tree --show-toplevel 2>/dev/null | head -1)"
-}
-#######################################
-# # Prepend paths to MANPATH
-# Globals:
-#   PATH
-# Arguments:
-#   1
-# Returns:
-#   0 ...
-#######################################
-manpathadd() {
-  for arg; do
-    test -d "${arg}" || continue
-    case ":${MANPATH}:" in
-       *":${arg}:"*) continue ;;
-    esac
-    export MANPATH="${arg}:${MANPATH:+"${MANPATH}"}"
-  done
-}
-#######################################
-# # Prepend paths to PATH
-# Globals:
-#   PATH
-# Arguments:
-#   1
-# Returns:
-#   0 ...
-#######################################
-pathadd() {
-  for arg; do
-    test -d "${arg}" || continue
-    case ":${PATH}:"  in
-      *":${arg}:"*) continue ;;
-    esac
-    PATH="${arg}${PATH:+:"${PATH}"}"
-  done
-}
-#######################################
-# # Prepend paths to PYTHONPATH
-# Globals:
-#   PATH
-# Arguments:
-#   1
-# Returns:
-#   0 ...
-#######################################
-pythonpathadd() {
-  for arg; do
-    test -d "${arg}" || continue
-    case ":${PYTHONPATH}:" in
-       *":${arg}:"*) continue ;;
-    esac
-    export PYTHONPATH="${arg}${PYTHONPATH:+:"${PYTHONPATH}"}"
-  done
-}
-#######################################
 # source files in arguments
 # Arguments:
 #  user     default $GIT or $USER
@@ -221,12 +127,6 @@ source_files() {
     fi
 done
 }
-#######################################
-# source files if bash4 and interactive, i.e.: completions
-# Arguments:
-#  user     default $GIT or $USER
-#######################################
-source_files_if_bash4_and_ps1() { ! $BASH4 || [ ! "${PS1-}" ] || source_files "$@"; }
 
 # source: posix (common to all shells)
 #

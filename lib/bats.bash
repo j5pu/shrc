@@ -169,10 +169,6 @@ bats::env() {
   BATS_SAVED_PATH="${PATH}"
   BATS_SAVED_MANPATH="${MANPATH}"
   BATS_SAVED_INFOPATH="${INFOPATH}"
-
-  # TODO: envfile
-  #  . "$(dirname "${BASH_SOURCE[0]}")/envfile.sh"
-  #  envfile
 }
 
 #######################################

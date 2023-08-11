@@ -1,0 +1,77 @@
+#!/bin/bash
+
+#
+# manages dotfiles
+
+#######################################
+# adds files/dirs in home and
+# Arguments:
+#  None
+#######################################
+add() {
+  :
+}
+
+
+#######################################
+# description
+# Arguments:
+#  None
+#######################################
+clean() {
+  :
+}
+
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  test $# -gt 0 || return 0
+
+  case "$1" in
+    -h|--help|help) rc=0 ;;
+    *)
+      >&2 echo "${0##*/}: $1: invalid option/argument"
+      >&2 echo
+      ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/} <clean|install>
+   or: ${0##*/} [-h|--help|help]
+
+shrc command to installs bin, man and bash_completion.d, from the top \
+of a repository into to shrc external directory: ${RC_EXTERNAL}"
+
+Commands:
+  clean                     removes dangling
+  install                    relative links to shrc external
+   -h, --help, help   display this help and exit.
+EOF
+  exit "${rc:-1}"
+}
+
+
+#######################################
+# installs relative links to home directory from repository
+# Arguments:
+#  None
+#######################################
+install() {
+  :
+}
+
+#######################################
+# dotfiles main command function
+# Arguments:
+#  None
+#######################################
+main() {
+  help "$@"
+
+}
+
+main "$@"
+

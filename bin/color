@@ -160,7 +160,7 @@ arrays() {
   SORTED["colors"]="$(sorted)"
 
   for symbol in "${!SYMBOLS_ICON[@]}"; do
-    prefix="$(default "${symbol}" SYMBOLS_PREFIX)"
+    prefix="$(array_default "${symbol}" SYMBOLS_PREFIX)"
     value="${prefix}${COLORS["${SYMBOLS_COLORS["${symbol}"]}"]}${SYMBOLS_ICON["${symbol}"]}${COLORS["Normal"]}"
     SYMBOLS["${symbol}"]="${value}"
     SYMBOLS["${symbol}${ESCAPED}"]="\[${value}\]"
