@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Usage: rellink [-f] dir|file target_dir
+# Usage: relative [-f] dir|file target_dir
 
 set -eu
 
@@ -36,7 +36,7 @@ help() {
     -h|--help|help) rc=0 ;;
     *) return 0 ;;
   esac
-  command="$(red ${0##*/})"
+  command="$(red "${0##*/}")"
   >&2 cat <<EOF
 usage: ${command} [-d|--dry] [-f|--force] <source-dir|source-file> <target-dir|target-file>
    or: ${command} [-h|--help|help]
@@ -142,6 +142,7 @@ main() {
     -h|--help|help) help "$@";;
     -d|--dry) echo="echo"; shift ;;
   esac
+
   source_relative="$(echo "$1" | sed 's|/$||')"
   target_relative="$(echo "$2" | sed 's|/$||')"
   
@@ -158,6 +159,7 @@ main() {
   TARGET_ABSOLUTE="${target_dirname}/${target_basename}"
 
   [ "${SOURCE_ABSOLUTE}" != "${TARGET_ABSOLUTE}" ] || die "${TARGET_ABSOLUTE} source and target are identical"
+  # FIXME: remove realpath
   ! test -h "${TARGET_ABSOLUTE}" || [ "$(realpath "${TARGET_ABSOLUTE}")" != "${SOURCE_ABSOLUTE}" ] || exit 0 # nothing to do
 
   ! $force || if with_sudo rm -rf "${TARGET_ABSOLUTE}"; then

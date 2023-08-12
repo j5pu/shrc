@@ -49,13 +49,15 @@ export SHRC_COMPLETION_D="${SHRC}/bash_completion.d"
 #
 export SHRC_CONFIG="${SHRC}/config"
 # SHRC external custom dir for other repositories, completions and profile.d
-#
+# They are installed with "shrc install"
 export SHRC_EXTERNAL="${SHRC}/external"
 # SHRC external bin shims dir for other repositories
 # Subdirectories are added to path
 export SHRC_EXTERNAL_BIN="${SHRC_EXTERNAL}/bin"
 # SHRC external completions compat directory. BASH_COMPLETION_USER_DIR
 # "Dynamically loaded by __load_completion()/_completion_loader() functions,
+# 3rd-party tools completions are installed manually under "vendor"
+# Patched completions are installed under "patches"
 export SHRC_EXTERNAL_COMPLETION_D="${SHRC_EXTERNAL}/bash_completion.d"
 export BASH_COMPLETION_USER_DIR="${SHRC_EXTERNAL_COMPLETION_D}"
 # SHRC external man shims dir for other repositories
@@ -130,16 +132,16 @@ done
 
 # source: posix (common to all shells)
 #
-source_files "${SHRC_PROFILE_D}"/??*.d/*.sh "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*.sh "${SHRC_EXTERNAL_PROFILE_D}"/*.sh
+source_files "${SHRC_PROFILE_D}"/??*.d/*.sh "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*.sh
 
 # source: bash and zsh hooks
 #
 if [ "${SHRC_HOOKS_SHELL-}" ]; then
   source_files "${SHRC_PROFILE_D}"/??*.d/*."${SHRC_HOOKS_SHELL}" \
-    "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*."${SHRC_HOOKS_SHELL}" "${SHRC_EXTERNAL_PROFILE_D}"/*."${SHRC_HOOKS_SHELL}"
+    "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*."${SHRC_HOOKS_SHELL}"
 fi
 
-source_files_if_bash4_and_ps1 "${SHRC_COMPLETION_D}"/* "${SHRC_EXTERNAL_COMPLETION_D}"/*
+source_files_if_bash4_and_ps1 "${SHRC_COMPLETION_D}"/* "${SHRC_COMPLETION_D}"/**/*
 
 ! cmd export_all_functions || export_all_functions
 

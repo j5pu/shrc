@@ -12,9 +12,9 @@
 #######################################
 _shrc() {
   _init_completion -n :=/ || return
-  local w=(-h --help help all clean install)
+  local w=(-h --help help all clean install uninstall)
 
-  [[ ! "${words[1]}" =~ -h|--help|help|all|clean|install ]] || return 0
+  [[ ! "${words[1]}" =~ -h|--help|help|all|clean|install|uninstall ]] || return 0
 
   mapfile -t COMPREPLY < <(compgen -o nospace -W "${w[*]}" -- "${cur}")
 }

@@ -45,7 +45,7 @@ main() {
   help "$@"
 
   dir="$("$(dirname "$0")/tilde" "${1:-.}")"
-  test -e "${dir}" || { echo "$1"; return; }
+  test -e "${dir}" || { Error  "${0##*/}:" "$1 no such file/directory"; exit 1; }
   test -d "${dir}" || dir="$(dirname "${dir}")"
   cd "${dir}"
   pwd -P

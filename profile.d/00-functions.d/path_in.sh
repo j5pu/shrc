@@ -13,7 +13,7 @@
 #######################################
 path_in() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_in_add=":"
-  _path_in_real="$("${SHRC_BIN}/pwd_p" "${1:-${PWD}}")"
+  _path_in_real="$(pwd_p "${1:-${PWD}}" 2>/dev/null)"
   case ":$(eval echo "\$${2:-PATH}")${_path_in_add-}" in
     *:"${_path_in_real}":*) unset _path_in_add _path_in_real; return 0 ;;
     *) unset _path_in_add _path_in_real; return 1 ;;

@@ -5,8 +5,6 @@
 
 set -eu
 
-. "${SHRC_LIB?}/shell.sh"
-
 
 #######################################
 # die with return or exit

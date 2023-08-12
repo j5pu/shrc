@@ -2,4 +2,10 @@
 
 # Find dangling symlinks
 #
-dangling "$@" | xargs -I "{}" rm -v "{}"
+
+tmp="$(mktemp)"
+dangling "$@"  > "${tmp}"
+while read -r link; do
+  rm "${link}"  && Ok "${0##*/}" "${link}: removed"
+done < "${tmp}"
+

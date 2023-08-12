@@ -7,21 +7,26 @@ set -eu
 
 all() {
   tmp="$(mktemp)"
-  find . -type f -name .shrc -exec dirname "{}" \; > "${tmp}"
+  find "${HOME}" -type f -name .shrc -exec dirname "{}" \; > "${tmp}"
   while read -r dir; do
-    (cd "${dir}" && install && clean)
-  done
+    (cd "${dir}" && install)
+  done < "${tmp}"
+  clean
 }
 
 #######################################
-# description
+# clean dangling in shrc
 # Arguments:
 #  None
 #######################################
-clean() {
-  isshrc
-  dangling-rm "${superproject}"
-}
+clean() { ! test -d "${SHRC_EXTERNAL}" || dangling-rm "${SHRC_EXTERNAL}"; }
+
+#######################################
+# die
+# Arguments:
+#   1
+#######################################
+die() { Error "${0##*/}:"  "$1" && exit 1; }
 
 #######################################
 # show usage
@@ -34,24 +39,26 @@ help() {
   case "$1" in
     -h|--help|help) rc=0 ;;
     -*)
-      >&2 echo "${0##*/}: $1: invalid option/argument"
+      >&2 die "$1: invalid option/argument"
       >&2 echo
       ;;
+    *) return ;;
   esac
 
   >&2 cat <<EOF
-usage: ${0##*/} <clean|install>
+usage: ${0##*/} <all|clean|install|uninstall>
    or: ${0##*/} [-h|--help|help]
 
 shrc command to installs bin, man and bash_completion.d, from the top \
-of a repository into to shrc external directory: ${RC_EXTERNAL}"
+of a repository into to shrc external directory: ${SHRC_EXTERNAL}"
 
 Project must have an ".shrc" file at the top of the repository and the following directories:
 - bash_completion.d
 - bin
+- profile.d
 - share/man
 
-Directories are symlinked for bin and man, while files for bash_completions.d.
+Directories are symlinked for bin and man, while files for bash_completions.d and profile.d
 
 No command is 'install'
 
@@ -59,6 +66,7 @@ Commands:
   all                           install and clean all projects that have a ".shrc" file starting from home
   clean                       removes dangling
   install                      relative links to shrc external
+  uninstall                  removes/uninstalls for a project with ".shrc" file
    -h, --help, help     display this help and exit.
 EOF
   exit "${rc:-1}"
@@ -72,19 +80,29 @@ EOF
 #######################################
 install() {
   _install() {
-     test -d "$1" || return 0
-     relative "$1" "$2"
+    source="$1"; target="$2"
+
+    case "${source}" in
+      *bash_completion.d|*profile.d)
+        for file in "${source}"/*; do
+          test -f "${file}" || return 0
+          source="${file}"
+          target="${2}/${file##*/}"
+        done
+        ;;
+      *) test -d "$1" || return 0
+    esac
+    link "${source}" "${target}"
   }
 
   isshrc
 
+
   _install "${superproject}/bin" "${SHRC_EXTERNAL_BIN}/${superproject##*/}"
   _install "${superproject}/share/man" "${SHRC_EXTERNAL_MAN}/${superproject##*/}"
 
-  test -d "${superproject}/bash_completion.d" || return 0
-  for file in "${superproject}/bash_completion.d"/*; do
-    relative "${file}" "${SHRC_EXTERNAL_COMPLETION_D}/${file##*/}"
-  done
+  _install "${superproject}/bash_completion.d"  "${SHRC_EXTERNAL_COMPLETION_D}"
+  _install "${superproject}/profile.d"  "${SHRC_EXTERNAL_PROFILE_D}"
 }
 
 
@@ -93,7 +111,34 @@ install() {
 # Arguments:
 #  None
 #######################################
-isshrc() { test -d "${superproject}/.shrc" || Error "${0##*/}:"  "${superproject} is not an shrc project" && exit 1; }
+isshrc() { test -f "${superproject}/.shrc" || die  "${superproject} is not a shrc project"; }
+
+#######################################
+# link and die if error
+# Arguments:
+#  None
+#######################################
+link() { relative "$1" "$2" || die "$1 -> $2 can not be created"; }
+
+#######################################
+# uninstalls bin, man and bash_completion.d to shrc external directory
+# Arguments:
+#  None
+#######################################
+uninstall() {
+  isshrc
+
+  tmp="$(mktemp)"
+  for dir in  "${SHRC_EXTERNAL_BIN}"  "${SHRC_EXTERNAL_MAN}" \
+    "${SHRC_EXTERNAL_COMPLETION_D}" "${SHRC_EXTERNAL_PROFILE_D}" ; do
+      ! test -d "${dir}" ||  find "${dir}"  -type l   >> "${tmp}"
+  done
+
+  while read -r link; do
+    realpath "${link}" | grep -q "${superproject}" || continue
+    rm "${link}"  && Ok "${0##*/}" "${link}: removed"
+  done < "${tmp}"
+}
 
 #######################################
 # shrc main command function
@@ -109,7 +154,7 @@ main() {
 
   for arg; do
     case "${arg}" in
-      all|clean|install) function="${arg}"
+      all|clean|install|uninstall) function="${arg}"
     esac
   done
 

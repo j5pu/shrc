@@ -1,8 +1,5 @@
 # shellcheck shell=bash
 
-#. "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
-. "${SHRC_LIB?}/utils.sh"
-
 # <html><h2>Bats Description Array</h2>
 # <p><strong><code>$BATS_ARRAY</code></strong> created by bats::array() with $BATS_TEST_DESCRIPTION.</p>
 # </html>
@@ -193,8 +190,9 @@ bats::failure() {
 #  1  directory name (default: random name)
 #######################################
 bats::remote() {
-  local pwd_p="$(pwd_p "$(bats::tmp "${1:-$RANDOM}")")"
-  local pwd_p_git="$(pwd_p "$(bats::tmp "${1:-$RANDOM}.git")")"
+  local pwd_p pwd_p_git
+  pwd_p="$(pwd_p "$(bats::tmp "${1:-$RANDOM}")")"
+  pwd_p_git="$(pwd_p "$(bats::tmp "${1:-$RANDOM}.git")")"
   BATS_REMOTE=("${pwd_p}" "${pwd_p_git}"); export BATS_REMOTE
   git -C "${BATS_REMOTE[1]}" init --bare --quiet
   cd "${BATS_REMOTE[0]}" || return
@@ -386,7 +384,7 @@ _docker() {
 
       if ! docker-running; then
         ! fd3 || >&3 echo "${0##*/}: Error: Starting Docker"
-        >&2 echo "${0##*/}: Error: Starting Docker"; return 1 2>/dev/null || exit
+        >&2 echo "${0##*/}: Error: Starting Docker" && return 1
       fi
     fi
   fi
@@ -465,7 +463,7 @@ Globals:
    BATS_GATHER              Gather the output of failing *and* passing tests as
                             files in directory [--gather-test-outputs-in].
    BATS_OUTPUT              Directory to write report files [-o|--output].
-   BATS_TEST_DIR            Path to the test directory, passed as argument or found by '${script}'.
+   BATS_TEST_DIR            Path to the test directory, passed as argument or found by "${script}".
    BATS_TESTS               Array of tests found.
 
 $("${BATS_EXECUTABLE}" --version)
@@ -510,7 +508,9 @@ _main() {
   _bats_libs || return
   _functions || return
 
-  bats::env || return
+  # FIXME: bats gives error "grep: brackets ([ ]) not balanced" when calling bats::env
+#  bats::env || return
+
   _docker "$@" || return
 
   ! $sourced || {

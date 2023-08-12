@@ -16,7 +16,7 @@ path_append() {
   elif [ "${_path_append_value-}" ]; then
     _path_append_first=":"
   fi
-  _path_append_real="$("${SHRC_BIN?}/pwd_p" "${1:-${PWD}}")"
+  _path_append_real="$(pwd_p "${1:-${PWD}}" 2>/dev/null)"
   eval "export ${2:-PATH}='${_path_append_value}${_path_append_first-}${_path_append_real}${_path_append_last-}'"
   unset _path_append_first _path_append_last _path_append_real _path_append_value
 }
