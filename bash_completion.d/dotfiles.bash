@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 
 #######################################
-# completions for dangling
+# completions for dotfiles
 # Globals:
 #   COMPREPLY
 #   cur
@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_dangling() { completions_one_command -d; }
+_dotfiles() { completions_one_command -d; }
 
-complete -F _dangling dangling
+complete -F _dotfiles dotfiles

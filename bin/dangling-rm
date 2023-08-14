@@ -3,9 +3,42 @@
 # Find dangling symlinks
 #
 
-tmp="$(mktemp)"
-dangling "$@"  > "${tmp}"
-while read -r link; do
-  rm "${link}"  && Ok "${0##*/}" "${link}: removed"
-done < "${tmp}"
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  case "$1" in
+    -h|--help|help) rc=0 ;;
+    -*)
+      >&2 die "$1: invalid option/argument"
+      >&2 echo
+      ;;
+    *) return ;;
+  esac
 
+  >&2 cat <<EOF
+usage: ${0##*/}  [dir]
+   or: ${0##*/} [-h|--help|help]
+
+remove dangling symlinks in directory (default: cwd)
+
+Commands:
+   -h, --help, help     display this help and exit.
+EOF
+  exit "${rc:-1}"
+}
+
+
+main() {
+  help "$@"
+
+  tmp="$(mktemp)"
+  dangling "$@" >"${tmp}"
+  while read -r link; do
+    rm "${link}" && Ok "${0##*/}" "${link}: removed"
+  done <"${tmp}"
+}
+
+main "$@"

@@ -8,21 +8,21 @@ set -o errtrace functrace
 if $BASH4; then
   # Shared array to copy array used by cparray(), getkey(), getvalue() and inarray()
   #
-  declare -Axg _ARRAY
+  declare -Ax _ARRAY
   shopt -s inherit_errexit extglob globstar gnu_errfmt
 
   enable -f mypid enable_mypid
   enable -f truefalse false
   enable -f truefalse true
   for i in accept csv dsv fdflags finfo \
-    id logname mkfifo mktemp pathchk print printenv \
+    id logname mkfifo mktemp pathchk printenv \
     push setpgid sleep strftime sync tee tty whoami; do
     enable -f "$i" "$i" 2>/dev/null
   done
 else
   # Shared array to copy array used by cparray(), getkey(), getvalue() and inarray()
   #
-  declare -p _ARRAY &>/dev/null || declare -axg _ARRAY
+  declare -ax _ARRAY
 fi
 
 [ "${PS1-}" ] || return 0

@@ -2,38 +2,11 @@
 
 . bats.bash
 
-@test "assert::helps replace tilde at the beginning of each line from arguments or stdin with \$HOME" {
+@test "assert::helps shrc command to install bin, man and bash_completion.d, from the top of a repository into to shrc external directory: ${SHRC_EXTERNAL}" {
   bats::success
 }
 
 @test "$(bats::basename)" {
-  bats::success
-}
-
-@test "$(bats::basename) ~ " {
-  bats::success
-  assert_output "${HOME}"
-}
-
-@test "$(bats::basename) ~ ~/foo" {
-  bats::success
-  assert_output - <<EOF
-${HOME}
-${HOME}/foo
-EOF
-}
-
-@test "echo ~ | $(bats::basename)" {
-  run sh -c "${BATS_TEST_DESCRIPTION}"
-  assert_success
-  assert_output "${HOME}"
-}
-
-@test "printf '%s\n' ~ ~/foo | $(bats::basename)" {
-  run sh -c "${BATS_TEST_DESCRIPTION}"
-  assert_success
-  assert_output - <<EOF
-${HOME}
-${HOME}/foo
-EOF
+  bats::failure
+  assert_output "$( Error "$(bats::basename):"  "${BATS_TOP} is not a shrc project";)"
 }

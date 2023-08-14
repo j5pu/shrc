@@ -10,13 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_shrc() {
-  _init_completion -n :=/ || return
-  local w=(-h --help help all clean install uninstall)
-
-  [[ ! "${words[1]}" =~ -h|--help|help|all|clean|install|uninstall ]] || return 0
-
-  mapfile -t COMPREPLY < <(compgen -o nospace -W "${w[*]}" -- "${cur}")
-}
+_shrc() {  completions_one_command all clean install uninstall; }
 
 complete -F _shrc shrc

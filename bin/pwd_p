@@ -24,14 +24,14 @@ usage: ${0##*/} [path]
 
 physical pwd for path if it is a directory or for dirname if path exists (default: pwd)
 
-shows path if it does not exist
-
 Arguments:
   path             the path to show physical pwd for (default: pwd)
 
 Commands:
    -h, --help, help   display this help and exit.
 
+Returns:
+  1 if directory or file does not exits
 EOF
   exit "${rc:-1}"
 }
@@ -44,7 +44,7 @@ EOF
 main() {
   help "$@"
 
-  dir="$("$(dirname "$0")/tilde" "${1:-.}")"
+  dir="$(striptilde "${1:-.}")"
   test -e "${dir}" || { Error  "${0##*/}:" "$1 no such file/directory"; exit 1; }
   test -d "${dir}" || dir="$(dirname "${dir}")"
   cd "${dir}"

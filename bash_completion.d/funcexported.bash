@@ -10,6 +10,7 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_dangling() { completions_one_command -d; }
+# shellcheck disable=SC2046
+_funcexported() { completions_one_command $(declare -pFx | awk '{ print $3 }'); }
 
-complete -F _dangling dangling
+complete -F _funcexported funcexported

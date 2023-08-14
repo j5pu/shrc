@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 
 #######################################
-# completions for dangling
+# completions for fd3
 # Globals:
 #   COMPREPLY
 #   cur
@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_dangling() { completions_one_command -d; }
+_fd3() { completions_one_command; }
 
-complete -F _dangling dangling
+complete -F _fd3 fd3

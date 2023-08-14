@@ -10,12 +10,18 @@
 #   1 if invalid array name or type
 #######################################
 cparray() {
-  local declare
-  if declare="$(declare -p "${1:-COMP_WORDS}" 2>&1)"; then
-    [[ "${declare}" =~ "declare "-[a,A] ]] || { >&2 echo "cparray: undefined array: ${declare}"; return 1; }
-    eval "_ARRAY=$(cut -d '=' -f 2- <<< "${declare}")"
+  local array key
+  if array="$(declare -p "${1:-COMP_WORDS}" 2>&1)"; then
+    [[ "${array}" =~ "declare "-[a,A] ]] || { >&2 echo "cparray: undefined array: ${array}"; return 1; }
+    echo "cparray: _ARRAY=$(cut -d '=' -f 2- <<< "${array}")"
+
+    _ARRAY=()
+    for key in "${!array[@]}"; do
+      _ARRAY["${key}"]="$(cut -d '=' -f 2- <<< "${array}")"
+    done
   else
-    >&2 echo "cparray: ${declare}"
+    >&2 echo "cparray: ${array[*]}"
     return 1
   fi
+
 }

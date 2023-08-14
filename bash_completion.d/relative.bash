@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 
 #######################################
-# completions for dangling
+# completions for relative
 # Globals:
 #   COMPREPLY
 #   cur
@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_dangling() { completions_one_command -d; }
+_relative() { completions_one_command -f; }
 
-complete -F _dangling dangling
+complete -F _relative relative

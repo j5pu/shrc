@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 
 #######################################
-# completions for dangling
+# completions for home
 # Globals:
 #   COMPREPLY
 #   cur
@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_dangling() { completions_one_command -d; }
+_home() { completions_one_command $(usernames); }
 
-complete -F _dangling dangling
+complete -F _home home

@@ -1,10 +1,53 @@
 #!/bin/sh
 
-if $MACOS; then
-  dscl . list /Users | grep -v '^_' | grep -vE "daemon|nobody"
-else
-## get UID limit ##
-  l=$(grep "^UID_MIN" /etc/login.defs)
-  ## use awk to print if UID >= $UID_LIMIT ##
-  awk -F':' -v "limit=${l##UID_MIN}" '{ if ( $3 >= limit ) print $1}' /etc/passwd
-fi
+
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  test $# -gt 0 || return 0
+
+  case "$1" in
+    -h|--help|help) rc=0 ;;
+    -*)
+      >&2 die "$1: invalid option/argument"
+      >&2 echo
+      ;;
+    *) return ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/}
+   or: ${0##*/} [-h|--help|help]
+
+list users who can log in into the system
+
+Commands:
+   -h, --help, help     display this help and exit.
+EOF
+  exit "${rc:-1}"
+}
+
+
+#######################################
+#list users who can log into the system
+# Arguments:
+#  None
+#######################################
+
+main()  {
+  help "$@"
+
+  if $MACOS; then
+    dscl . list /Users | grep -v '^_' | grep -vE "daemon|nobody"
+  else
+    ## get UID limit ##
+    l=$(grep "^UID_MIN" /etc/login.defs)
+    ## use awk to print if UID >= $UID_LIMIT ##
+    echo root && awk -F':' -v "limit=${l##UID_MIN}" '{ if ( $3 >= limit ) print $1}' /etc/passwd | grep -vE "nobody"
+  fi
+}
+
+main "$@"

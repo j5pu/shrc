@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 
 #######################################
-# completions for shrc
+# completions for usernames
 # Globals:
 #   COMPREPLY
 #   cur
@@ -10,13 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_shrc() {
-  _init_completion -n :=/ || return
-  local w=(-h --help help all clean install uninstall)
+_usernames() { completions_one_command; }
 
-  [[ ! "${words[1]}" =~ -h|--help|help|all|clean|install|uninstall ]] || return 0
-
-  mapfile -t COMPREPLY < <(compgen -o nospace -W "${w[*]}" -- "${cur}")
-}
-
-complete -F _shrc shrc
+complete -F _usernames usernames

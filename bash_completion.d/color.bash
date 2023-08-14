@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 
 #######################################
-# completions for dangling
+# completions for color
 # Globals:
 #   COMPREPLY
 #   cur
@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_dangling() { completions_one_command -d; }
+_color() { completions_one_command build demo; }
 
-complete -F _dangling dangling
+complete -F _color color

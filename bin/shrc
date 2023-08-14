@@ -5,11 +5,16 @@
 
 set -eu
 
+#######################################
+# install all packages with .shrc and clean
+# Arguments:
+#  None
+#######################################
 all() {
   tmp="$(mktemp)"
   find "${HOME}" -type f -name .shrc -exec dirname "{}" \; > "${tmp}"
   while read -r dir; do
-    (cd "${dir}" && install)
+    (cd "${dir}" && SUPERPROJECT="$(superproject)" install)
   done < "${tmp}"
   clean
 }
@@ -49,8 +54,8 @@ help() {
 usage: ${0##*/} <all|clean|install|uninstall>
    or: ${0##*/} [-h|--help|help]
 
-shrc command to installs bin, man and bash_completion.d, from the top \
-of a repository into to shrc external directory: ${SHRC_EXTERNAL}"
+shrc command to install bin, man and bash_completion.d, from the top \
+of a repository into to shrc external directory: ${SHRC_EXTERNAL}
 
 Project must have an ".shrc" file at the top of the repository and the following directories:
 - bash_completion.d
@@ -98,11 +103,11 @@ install() {
   isshrc
 
 
-  _install "${superproject}/bin" "${SHRC_EXTERNAL_BIN}/${superproject##*/}"
-  _install "${superproject}/share/man" "${SHRC_EXTERNAL_MAN}/${superproject##*/}"
+  _install "${SUPERPROJECT}/bin" "${SHRC_EXTERNAL_BIN}/${SUPERPROJECT##*/}"
+  _install "${SUPERPROJECT}/share/man" "${SHRC_EXTERNAL_MAN}/${SUPERPROJECT##*/}"
 
-  _install "${superproject}/bash_completion.d"  "${SHRC_EXTERNAL_COMPLETION_D}"
-  _install "${superproject}/profile.d"  "${SHRC_EXTERNAL_PROFILE_D}"
+  _install "${SUPERPROJECT}/bash_completion.d"  "${SHRC_EXTERNAL_COMPLETION_D}"
+  _install "${SUPERPROJECT}/profile.d"  "${SHRC_EXTERNAL_PROFILE_D}"
 }
 
 
@@ -111,7 +116,7 @@ install() {
 # Arguments:
 #  None
 #######################################
-isshrc() { test -f "${superproject}/.shrc" || die  "${superproject} is not a shrc project"; }
+isshrc() { test -f "${SUPERPROJECT}/.shrc" || die  "${SUPERPROJECT} is not a shrc project"; }
 
 #######################################
 # link and die if error
@@ -135,7 +140,7 @@ uninstall() {
   done
 
   while read -r link; do
-    realpath "${link}" | grep -q "${superproject}" || continue
+    realpath "${link}" | grep -q "${SUPERPROJECT}" || continue
     rm "${link}"  && Ok "${0##*/}" "${link}: removed"
   done < "${tmp}"
 }
@@ -150,7 +155,7 @@ main() {
 
   function="install"
 
-  superproject="$(superproject)"
+  SUPERPROJECT="$(superproject)"
 
   for arg; do
     case "${arg}" in

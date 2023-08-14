@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="ToDo" pattern="file[shrc]:tests/bin/home.bats||file[shrc]:bin/home||file[shrc]:bash_completion.d/home.bash||file[shrc]:tests/bin/usernames.bats" />
+</component>

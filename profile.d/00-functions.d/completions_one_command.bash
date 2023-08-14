@@ -18,7 +18,7 @@ export _COMPLETION_DEFAULT_HELPS=("${_COMPLETION_DEFAULT_HELPS_GIT[@]}" help)
 #   -f    show _filedir from share/bash-completion/bash_completion
 #   1     helps and/or other commands (default: -h --help help)
 #######################################
-_comp_one_command() {
+completions_one_command() {
   local args=() has_git=false help_options=() is_git_command=false show_dirs=() show_files=false
 
   if [ "${COMP_WORDS[0]%%-*}" = "git" ]; then

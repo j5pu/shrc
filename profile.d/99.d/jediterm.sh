@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 
-isjedi || return 0
+{  isjedi && [ "${JEDI_TOP}" != "${SHRC}" ] ; }|| return 0
 
 infopathadd "${JEDI_TOP}/share/info"
 manpathadd "${JEDI_TOP}/share/man"

@@ -1,13 +1,46 @@
 #!/bin/sh
+
 #
 # User HOME (because of sudoers !env_reset)
 
+
+#######################################
+# show users home
+# Arguments:
+#   1
+#######################################
+help() {
+  case "$1" in
+    -h|--help|help) rc=0 ;;
+    -*) RETURN="return" die "$1: invalid option/argument\n" ;;
+    *) return 0 ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/} [user]
+   or: ${0##*/} -h|--help|help
+
+show user's home, default $HOME
+
+Arguments:
+  user            user name (default: $USER)
+
+Commands:
+   -h, --help, help   display this help and exit.
+EOF
+  exit "${rc:-1}"
+}
+
 #######################################
 # get user home
+# eval echo ~"${1:-$(user)}"
 # Arguments:
 #  user     default $GIT or $USER
 #######################################
 # shellcheck disable=SC2016
-home() { ${SUDO:+${SUDO} -u} "${1-${GIT}}" sh -c 'echo "${HOME}"'; }
+main() {
+  help "$@"
+  ${SUDO:+${SUDO} -u} "${1-${USER}}" sh -c 'echo "${HOME}"'; }
 
-eval echo ~"${1:-$(user)}"
+
+main "$@"

@@ -2,4 +2,39 @@
 
 # Find dangling symlinks
 #
-find "${1:-.}" -type l ! -exec test -e {} \; -print
+
+
+#######################################
+# show usage
+# Arguments:
+#   1
+#######################################
+help() {
+  case "$1" in
+    -h|--help|help) rc=0 ;;
+    -*)
+      >&2 die "$1: invalid option/argument"
+      >&2 echo
+      ;;
+    *) return ;;
+  esac
+
+  >&2 cat <<EOF
+usage: ${0##*/}  [dir]
+   or: ${0##*/} [-h|--help|help]
+
+find dangling symlinks in directory (default: cwd)
+
+Commands:
+   -h, --help, help     display this help and exit.
+EOF
+  exit "${rc:-1}"
+}
+
+main (){
+  help "$@"
+
+  find "${1:-.}" -type l ! -exec test -e {} \; -print
+}
+
+main "$@"

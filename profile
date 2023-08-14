@@ -141,7 +141,7 @@ if [ "${SHRC_HOOKS_SHELL-}" ]; then
     "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*."${SHRC_HOOKS_SHELL}"
 fi
 
-source_files_if_bash4_and_ps1 "${SHRC_COMPLETION_D}"/* "${SHRC_COMPLETION_D}"/**/*
+source_files_if_bash4_and_ps1 "${SHRC_COMPLETION_D}"/**/*
 
 ! cmd export_all_functions || export_all_functions
 

@@ -2,7 +2,10 @@
 
 . bats.bash
 
-setup_file() { . "${BATS_TOP}/tests/helpers/helpers.bash"; }
+@test "assert::helps is Docker daemon running?" {
+  bats::success
+}
+
 
 @test "$(bats::basename) " {
   skip::if::not::command docker
@@ -12,8 +15,4 @@ setup_file() { . "${BATS_TOP}/tests/helpers/helpers.bash"; }
   else
     bats::success
   fi
-}
-
-@test "assert::helps is Docker daemon running?" {
-  bats::success
 }
