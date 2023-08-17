@@ -10,6 +10,7 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_home() { completions_one_command $(usernames); }
+# shellcheck disable=SC2046
+_home() { bash4_completions_one_command $(usernames); }
 
 complete -F _home home

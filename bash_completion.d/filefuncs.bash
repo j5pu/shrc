@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_filefuncs() { completions_one_command -f; }
+_filefuncs() { bash4_completions_one_command -f; }
 
 complete -F _filefuncs filefuncs

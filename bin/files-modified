@@ -1,0 +1,11 @@
+#!/bin/sh
+
+#######################################
+# show files modified/changed in two directory (not deleted or added)
+# Arguments:
+#   1
+#   2
+#######################################
+main() { git diff --diff-filter=M --name-only --no-index "$1" "$2"; }
+
+main "$@"

@@ -9,6 +9,6 @@
 #   2     word being completed ("cur")
 #   3     word preceding the word being completed or $1 when is the first word ("prev")
 #######################################
-_isaction() { completions_one_command; }
+_isaction() { bash4_completions_one_command; }
 
 complete -F _isaction isaction

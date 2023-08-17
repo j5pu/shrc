@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_usernames() { completions_one_command; }
+_usernames() { bash4_completions_one_command; }
 
 complete -F _usernames usernames

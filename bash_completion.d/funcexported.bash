@@ -11,6 +11,6 @@
 #   <unknown> ...
 #######################################
 # shellcheck disable=SC2046
-_funcexported() { completions_one_command $(declare -pFx | awk '{ print $3 }'); }
+_funcexported() { bash4_completions_one_command $(declare -pFx | awk '{ print $3 }'); }
 
 complete -F _funcexported funcexported

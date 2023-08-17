@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_dangling_rm() { completions_one_command -d; }
+_dangling_rm() { bash4_completions_one_command -d; }
 
 complete -F _dangling_rm dangling-rm

@@ -9,6 +9,6 @@
 #   2     word being completed ("cur")
 #   3     word preceding the word being completed or $1 when is the first word ("prev")
 #######################################
-_isdebian() { completions_one_command; }
+_isdebian() { bash4_completions_one_command; }
 
 complete -F _isdebian isdebian

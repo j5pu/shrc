@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_newline_to() { completions_one_command; }
+_newline_to() { bash4_completions_one_command; }
 
 complete -F _newline_to newline-to

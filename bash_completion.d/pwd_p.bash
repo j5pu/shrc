@@ -9,6 +9,6 @@
 #   2     word being completed ("cur")
 #   3     word preceding the word being completed or $1 when is the first word ("prev")
 #######################################
-_pwd_p() { completions_one_command -f; }
+_pwd_p() { bash4_completions_one_command -f; }
 
 complete -F _pwd_p pwd_p

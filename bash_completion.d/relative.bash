@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_relative() { completions_one_command -f; }
+_relative() { bash4_completions_one_command -f; }
 
 complete -F _relative relative

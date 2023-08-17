@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_dotfiles() { completions_one_command -d; }
+_dotfiles() { bash4_completions_one_command -d; }
 
 complete -F _dotfiles dotfiles

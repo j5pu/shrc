@@ -33,7 +33,7 @@ if a `.shrc` is present at the top of the repository executing `shrc install`
 ## To debug and see files being sourced and order:
 
 ```shell
-SHRC_SHOW_FILES=1 rebash
+SHRC_DEBUG=1 rebash
 ```
 
 ## To do something when a shell is sourcing directly shrc/profile,
@@ -41,7 +41,7 @@ SHRC_SHOW_FILES=1 rebash
 i.e: avoid completions to be sourced when is sourced from a script
 
 ```shell
-[ "${SHELL_ARGZERO-}" ] || return 0  # 
+[ "${SH_ARGZERO-}" ] || return 0  # 
 ```
 
 ## jetbrains

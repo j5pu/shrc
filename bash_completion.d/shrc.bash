@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_shrc() {  completions_one_command all clean install uninstall; }
+_shrc() {  bash4_completions_one_command all clean install uninstall; }
 
 complete -F _shrc shrc

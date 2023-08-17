@@ -1,0 +1,11 @@
+#!/bin/sh
+
+#######################################
+# show files added to $2 directory not in $1 directory (does not show empty files)
+# Arguments:
+#   1
+#   2
+#######################################
+main() { git diff --diff-filter=A --name-only --no-index "$1" "$2"; }
+
+main "$@"

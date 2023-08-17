@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_striptilde() { completions_one_command; }
+_striptilde() { bash4_completions_one_command; }
 
 complete -F _striptilde striptilde

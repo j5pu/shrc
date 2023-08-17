@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_color() { completions_one_command build demo; }
+_color() { bash4_completions_one_command build demo; }
 
 complete -F _color color

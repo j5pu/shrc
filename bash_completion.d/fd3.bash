@@ -10,6 +10,6 @@
 # Returns:
 #   <unknown> ...
 #######################################
-_fd3() { completions_one_command; }
+_fd3() { bash4_completions_one_command; }
 
 complete -F _fd3 fd3
