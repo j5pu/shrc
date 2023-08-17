@@ -48,6 +48,9 @@ export SHRC_COMPLETION_D="${SHRC}/bash_completion.d"
 # Application configurations that can be configured with global variables and do not contain secrets.
 #
 export SHRC_CONFIG="${SHRC}/config"
+# SHRC DEBUG to 1 to show files etc.
+#
+: "${SHRC_DEBUG=0}"
 # SHRC external custom dir for other repositories, completions and profile.d
 # They are installed with "shrc install"
 export SHRC_EXTERNAL="${SHRC}/external"
@@ -124,7 +127,7 @@ fi
 source_files() {
   for arg; do
     if test -f "${arg}"; then
-      [ ! "${SHRC_SHOW_FILES-}" ] || echo "${arg}"
+      [ "${SHRC_DEBUG}" -eq 0 ] || echo "${arg}"
       . "${arg}"
     fi
 done
@@ -132,12 +135,13 @@ done
 
 # source: posix (common to all shells)
 #
-source_files "${SHRC_PROFILE_D}"/??*.d/*.sh "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*.sh
+source_files "${SHRC_PROFILE_D}"/??*.d/*.sh "${SHRC_PROFILE_D}"/??*.sh "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*.sh
 
 # source: bash and zsh hooks
 #
 if [ "${SHRC_HOOKS_SHELL-}" ]; then
   source_files "${SHRC_PROFILE_D}"/??*.d/*."${SHRC_HOOKS_SHELL}" \
+    "${SHRC_PROFILE_D}"/??*."${SHRC_HOOKS_SHELL}" \
     "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*."${SHRC_HOOKS_SHELL}"
 fi
 

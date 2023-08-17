@@ -25,6 +25,7 @@
     </scriptLibraries>
     <globalVariables>
       <var name="cur" />
+      <var name="Reset" />
     </globalVariables>
   </component>
 </project>

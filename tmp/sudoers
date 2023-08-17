@@ -1,0 +1,246 @@
+#!/bin/sh
+# shellcheck disable=SC2086
+
+#
+# sudoers.d update
+
+# curl -fsSL mnopi.com/sudoers | sh  # Will fail (since not valid: sudoers.sh, $PASSWORD or sudoers file)
+# EXPORT=correct curl -fsSL mnopi.com/sudoers | sh  # Will not fail
+# sh -c "$(curl -fksSL https://mnopi.com/sudoers)" # Will not fail and prompt for password
+# curl -fsSL mnopi.com/sudoers | sh  # Only if sudoers.sh, $PASSWORD, or sudoers file
+# curl -fsSL mnopi.com/sudoers | sh -s error
+# curl -fsSL mnopi.com/sudoers | sh -s correct; curl -fsSL mnopi.com/sudoers | sh -s fail  # will not fail since sudoers
+
+## sudo rm -f /etc/sudoers.sh; sudo rm -f /etc/sudoers.d/sudoers; unset PASSWORD
+# curl -fsSL mnopi.com/sudoers | sh  # Will fail
+# sh -c "$(curl -fksSL https://mnopi.com/sudoers)"  # Will not fail
+
+set -eu
+
+auto() {
+  grep -q "Automatic checking for updates is turned on" "$(sudo "$(which softwareupdate)" --schedule)" \
+    || { sudo "$(which softwareupdate)" --schedule on >/dev/null; print Software Update: on; }
+  for i in AutomaticCheckEnabled AutomaticDownload ConfigDataInstall CriticalUpdateInstall \
+    AutomaticallyInstallMacOSUpdates; do
+      defaults sudo /Library/Preferences/com.apple.SoftwareUpdate.plist "${i}" 0 true
+  done
+}
+
+clt() {
+  clt="/Library/Developer/CommandLineTools"
+  tmp="/tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress"
+  [ -e "${CLT}/usr/bin/git" ] || sudo touch "${tmp}"
+  softwareupdate
+  [ ! -f "${tmp}" ] || sudo rm -f "${tmp}"
+  if [ ! -e "${CLT}/usr/bin/git" ]; then
+    echo "Installing the Command Line Tools (expect a GUI popup):"
+    sudo xcode-select --install
+    if [ -t 0 ]; then
+      echo "Press <enter> when the installation has completed."
+      read -r
+    fi
+  fi
+  xcode-select -p >/dev/null 2>&1 || sudo xcode-select --switch "${CLT}"
+  sudo xcodebuild -license >/dev/null 2>&1
+}
+
+defaults() {
+  [ "$($1 "$(which defaults)" read "$2" "$3")" = "$4" ] \
+    || { $1 "$(which defaults)" write "$2" "$3" -bool "$5" >/dev/null; print Defaults "$2": "$5"; }
+}
+
+file() {
+  file="$($1)"
+  if [ "$(sudo $2 cat "${file}")" != "$(cat "${tmp}")" ]; then
+    sudo $2 cp "${tmp}" "${file}" && print "${file}"
+  fi
+}
+
+infopaths() {
+  tmp="$(mktemp)"
+  paths="$(cat <<EOF
+/usr/share/info
+${clt:+${clt}/usr/share/info}
+/usr/local/share/info
+${linuxbrew:+${linuxbrew}/share/info}
+/opt/share/info
+EOF
+)"
+  echo "${paths}" | grep -v "^$" > "${tmp}"
+  sudo mkdir -p /etc/infopaths.d
+  echo /etc/infopaths
+}
+
+manpaths() {
+  tmp="$(mktemp)"
+  paths="$(cat <<EOF
+/usr/share/man
+${clt:+${clt}/usr/share/man}
+/usr/local/share/man
+${linuxbrew:+${linuxbrew}/share/man}
+/opt/share/man
+EOF
+)"
+  echo "${paths}" | grep -v "^$" > "${tmp}"
+  sudo mkdir -p /etc/manpaths.d
+  echo /etc/manpaths
+}
+
+password() {
+  PASSWORD="${1:-}"
+  if [ ! "${PASSWORD}" ]; then
+    file="$(sudoers_sh)"
+    if [ -f "${file}" ]; then
+      # shellcheck source=/etc/sudoers.sh
+      . "${file}"
+    elif [ "${SUDOC}" ]; then
+      msg="$(tty || true)"
+      if [ -t 0 ]; then
+        printf '%s' "Enter admin password: "
+        read -r PASSWORD
+        msg=''
+      fi
+    fi
+  fi
+}
+
+paths() {
+  tmp="$(mktemp)"
+  paths="$(cat <<EOF
+/opt/sbin
+/opt/bin
+${linuxbrew:+${linuxbrew}/sbin}
+${linuxbrew:+${linuxbrew}/bin}
+/usr/local/sbin
+/usr/local/bin
+${clt:+${clt}/usr/bin}
+/usr/sbin
+/usr/bin
+/sbin
+/bin
+EOF
+)"
+  echo "${paths}" | grep -v "^$" > "${tmp}"
+  sudo mkdir -p /etc/paths.d
+  echo /etc/paths
+}
+
+print() (
+  rc=$?
+  export PROMPT_EOL_MARK=''
+  case $rc in
+    0) printf '\e[32m%s' ✔ ;;
+    *)
+      printf '\e[31m%s' ✗
+      exit="exit $rc"
+      ;;
+  esac
+  printf '\e[0m%s\n' " ${script}: $*"
+  eval "${exit-}"
+)
+
+softwareupdate() {
+  label=true
+  while [ "${label}" ]; do
+    label="$(sudo "$(which softwareupdate)" -l | awk -F '[: ]' '/^.*.Label: / { for (i=4; i<=NF; i++) printf $i " " }')"
+    [ ! "${label}" ] || sudo "$(which softwareupdate)" --install --all --restart >/dev/null
+    for i in ${label}; do print Software Update: "${i}"; done
+  done
+}
+
+stderr() { [ $? -eq 0 ] || sed "s/^/$(printf '\e[35m%s' '>')$(printf '\e[0m%s' ' ')/" "${stderr}"; }
+
+#######################################
+# helper for sudo
+# Arguments:
+#   None
+#######################################
+sudo() {
+  SUDOC='/usr/bin/sudo'
+  if [ -x "${SUDOC}" ]; then
+    case "$1" in
+      -S) echo "${PASSWORD}" | command -p sudo "$@" ;;
+      *) command -p sudo "$@" ;;
+    esac
+  else
+    SUDOC=''; mkdir -p /etc/sudoers.d
+    "$@"
+  fi
+}
+
+#######################################
+# updates sudoers in sudoers.d compat dir
+# Arguments:
+#   None
+#######################################
+sudoers() {
+  # stay_setuid, sudoedit_follow
+  defaults='always_set_home, !authenticate, env_keep="*", env_keep+="*=()*", !logfile, shell_noargs, !syslog'
+  type man >/dev/null
+  runchroot=', runchroot=*'
+  man sudoers | grep -q runchroot || runchroot=''
+  runcwd=', runcwd=*'
+  man sudoers | grep -q runcwd || runcwd=''
+
+  tmp="$(mktemp)"
+  cat > "${tmp}" <<EOF
+# Auto generated by: ${script}
+
+User_Alias ADMINS = %admin, %sudo, %wheel
+Defaults:ADMINS ${defaults}, umask=$(umask), umask_override${runchroot}${runcwd}
+EOF
+  echo "/etc/sudoers.d/${script}"
+}
+
+sudoers_sh() {
+  tmp="$(mktemp)"
+  cat > "${tmp}" <<EOF
+# shellcheck shell=sh
+
+# Auto generated by: ${script}
+
+umask $(umask)
+
+# Admin password
+export PASSWORD='${PASSWORD}'
+# Sudo command
+export SUDOC='${SUDOC}'
+EOF
+  echo "/etc/${script}.sh"
+}
+
+main() {
+  script='sudoers'
+  stderr="$(mktemp)"
+
+  exec 2>"${stderr}"
+  trap stderr EXIT
+  umask 002
+
+  password "$@"
+
+  sudo -K
+  sudo -S true || print Incorrect Password: "${PASSWORD:-${msg}}"
+  sudoers
+  if [ "$(sudo -S cat /etc/sudoers.d/*)" != "$(cat "${tmp}")" ]; then
+    sudo -S rm -rf /etc/sudoers.d/*
+    sudo -K
+    sudo -S true || print Incorrect Password: "${PASSWORD}"
+    file sudoers -S
+  fi
+  sudo -K || print Invalid Sudoers Configuration
+
+  if command -v xcode-select >/dev/null; then
+    auto
+    clt
+  else
+    linuxbrew="/home/linuxbrew/.linuxbrew"
+  fi
+
+  file sudoers_sh
+  file paths
+  file manpaths
+  file infopaths
+}
+
+main "$@"

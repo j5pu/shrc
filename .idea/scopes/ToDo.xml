@@ -1,3 +1,3 @@
 <component name="DependencyValidationManager">
-  <scope name="ToDo" pattern="file[shrc]:tests/bin/home.bats||file[shrc]:bin/home||file[shrc]:bash_completion.d/home.bash||file[shrc]:tests/bin/usernames.bats" />
+  <scope name="ToDo" pattern="file[shrc]:bash_completion.d/dotfiles.bash||file[shrc]:bin/dotfiles||file[shrc]:tests/bin/dotfiles.bats||file[shrc]:tests/bin/shrc.bats||file[shrc]:bin/sudo||file[shrc]:bin/sudoers||file[shrc]:tmp//*||file[shrc]:tests/bin/sudoers.bats" />
 </component>

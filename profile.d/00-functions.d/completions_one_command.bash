@@ -1,5 +1,7 @@
 # shellcheck shell=bash
 
+{ [  "${PS1-}" ] && $BASH4; } || return 0
+
 # Default help options for git completions
 #
 export _COMPLETION_DEFAULT_HELPS_GIT=(-h --help)
