@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#######################################
+# iCloud total files downloaded and evicted in directory
+# Arguments:
+#   1
+#######################################
+main() {
+  local dir total
+  dir="$(realpath "${1:-.}")"
+  total="$(find -L "${dir}" -not -name ".DS_Store" -type f)"
+  du -L -h -d1 "${dir}"
+  echo
+  echo "Total:        $(wc -l <<<"${total}")"
+  echo "  evicted:    $(wc -l < <(grep ".icloud$" <<<"${total}"))"
+  echo "  downloaded: $(wc -l < <(grep -v ".icloud$" <<<"${total}"))"
+}
+
+main "$@"

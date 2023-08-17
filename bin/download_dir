@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#######################################
+# iCloud download directory
+# Arguments:
+#   1
+#######################################
+main() {
+  local dir
+  dir="$(realpath "${1:-.}")"
+  #  find -L "${dir}" -type d -exec brctl download "{}" \;
+  find -L "${dir}" -type f -name "*.icloud" -exec brctl download "{}" \;
+}
+
+
+main "$@"

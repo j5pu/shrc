@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#######################################
+# download one or more files or directories
+# Globals:
+#   arg
+# Arguments:
+#  None
+#######################################
+main() {
+  local arg
+  [ $# -gt 0 ] || set -- .
+  for arg; do
+    if test -d "${arg}"; then
+      find "${arg}" -name "*.icloud" -exec brctl download "{}" \;
+    else
+      brctl download "${arg}"
+    fi
+  done
+}
+
+
+main "$@"

@@ -1,0 +1,54 @@
+#!/bin/bash
+
+#######################################
+# brctl status
+# Globals:
+#   HOME
+# Arguments:
+#   1
+#   2
+#   3
+#######################################
+main() {
+  local i status status_show x
+  status="$(brctl status com.apple.CloudDocs)"
+  # show status
+  status_show() { echo "${3-}${1}: $(grep -c -- "$2" <<<"${status}")"; }
+  for i in apply downloader reader sync-up upload; do
+    status_show "${i}" "> ${i}{"
+    case "${i}" in
+      apply)
+        for x in pending-download pending-parent; do
+          status_show "${x}" "${x}" "  "
+        done
+        echo "--------------------------------"
+        ;;
+      downloader)
+        # shellcheck disable=SC2043
+        for x in pending-disk; do
+          status_show "${x}" "${x}" "  "
+        done
+        ;;
+      reader)
+        status_show "needs-read[lost]" "needs-read" "  "
+        ;;
+      sync-up)
+        # shellcheck disable=SC2043
+        for x in sync-up-scheduled; do
+  status_show "${x}" "${x}" "  "
+done
+        ;;
+      upload)
+        for x in needs-sync-up needs-upload; do
+          status_show "${x}" "${x}" "  "
+        done
+        ;;
+    esac
+  done
+  echo "--------------------------------"
+  total "${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
+  unset -f status_show
+}
+
+
+main "$@"

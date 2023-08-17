@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#######################################
+# evict one or more files or directories
+# Arguments:
+#  None
+#######################################
+main() {
+  local arg
+  [ $# -gt 0 ] || set -- .
+  for arg; do
+    if test -d "${arg}"; then
+      find "${arg}" -not -name "*.icloud" -and -not -name .DS_Store -exec brctl evict "{}" \;
+    else
+      brctl evict "${arg}"
+    fi
+  done
+}
+
+main "$@"

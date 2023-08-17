@@ -1,0 +1,11 @@
+#!/bin/sh
+
+#######################################
+# macOS disk1 free
+# Arguments:
+#  None
+#######################################
+main() { df -H | awk '/\/dev\/disk1s1/ { printf $4 }'; }
+
+
+main "$@"

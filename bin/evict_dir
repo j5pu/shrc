@@ -1,0 +1,17 @@
+#!/bin/bash
+
+
+
+#######################################
+# iCloud evict directory
+# Arguments:
+#   1
+#######################################
+main() {
+  local dir
+  dir="$(realpath "${1:-.}")"
+  find -L "${dir}" -type d -exec brctl evict "{}" \;
+  find -L "${dir}" -type f -not -name "*.icloud" -not -name ".DS_Store" -exec brctl evict "{}" \;
+}
+
+main "$@"
