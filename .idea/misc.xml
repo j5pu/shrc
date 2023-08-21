@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ComposerSettings">
     <execution />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (shrc)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (media)" project-jdk-type="Python SDK" />
   <component name="PyCharmDSProjectLayout">
     <option name="id" value="JupyterRightHiddenStructureLayout" />
   </component>

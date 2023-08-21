@@ -9,9 +9,9 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../Archive" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../dotfiles" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../Clean/bbin-j5pu" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../Clean/rc" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../Clean/rc.d" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../media" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../secrets" vcs="Git" />
   </component>
 </project>

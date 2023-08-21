@@ -8,10 +8,10 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="rc" />
+    <orderEntry type="module" module-name="bbin" />
+    <orderEntry type="module" module-name="rc.d" />
     <orderEntry type="module" module-name="media" />
-    <orderEntry type="module" module-name="secrets" />
-    <orderEntry type="module" module-name="Archive" />
-    <orderEntry type="module" module-name="dotfiles" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="requirementsPath" value="pyproject.toml" />

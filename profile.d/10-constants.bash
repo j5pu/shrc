@@ -16,7 +16,8 @@ export LESS_TERMCAP_us=$'\e[1;4;31m'
 
 cmd starship || export PS2="${BlueDim}> "
 
-
-export PS4="+ [${Magenta}\$(basename \"\${BASH_SOURCE[0]}\")${Reset}][${Magenta}\${LINENO}${Reset}]\
-[${Yellow}\$(echo \${BASH_LINENO[*]} | awk '{\$NF=\"\"; print \$0}' | sed 's/ \$//g'| sed 's/ /@/g')${Reset}]\
-${Green}$ ${Reset}"
+export PS4='+'\
+"${YellowBoldItalic}[${MagentaBoldItalic}"'${BASH_SOURCE##*/}'"${Italic}:${MagentaBoldItalic}"\
+'${LINENO}'"${BoldItalic}${YellowBoldItalic}]"\
+'${FUNCNAME[0]:+\033[1;33m[\033[1;36m${FUNCNAME[0]}\033[0m\033[3m()\033[1;33m]}'\
+"${Green}$ ${Normal}"
