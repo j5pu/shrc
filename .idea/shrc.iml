@@ -12,6 +12,7 @@
     <orderEntry type="module" module-name="bbin" />
     <orderEntry type="module" module-name="rc.d" />
     <orderEntry type="module" module-name="media" />
+    <orderEntry type="module" module-name="Reembolsos" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="requirementsPath" value="pyproject.toml" />

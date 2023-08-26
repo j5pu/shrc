@@ -1,0 +1,52 @@
+#!/bin/bash
+
+
+# Make a PDF look scanned.
+# Extracted from https://github.com/baicunko/scanyourpdf and modified for smaller output files (compression lower density).
+
+#NOISE=(Gaussian Laplacian Uniform)
+
+ROTATE="$([ $((RANDOM % 2)) -eq 1 ] && echo -)0.$((RANDOM % 4 + 5))"
+
+#######################################
+# description
+# Globals:
+#   PREFIX
+#   file
+# Arguments:
+#   1
+#######################################
+delete() {
+  while read -r file; do
+    ! [[ "${file}" =~ Informe ]] || continue
+    rm "${file}"
+  done < <(find "$1" -type f -name "${PREFIX}*.pdf")
+}
+
+# Scans a directory of pdfs or files as arguments
+PREFIX="scanned_"
+if test $# -eq 0 || test -d "$1" ; then
+  dir="$1"
+  set --
+  delete "${dir:-.}"
+  while read -r file; do
+#    tag -r Blue "${file}"
+    echo "$file"
+    set -- "$@" "${file}"
+  done < <(find "${dir:-.}" -type f -name "*.pdf" -not -name "${PREFIX}*.pdf")
+fi
+
+for arg; do
+  arg="$(realpath "${arg}")"
+  echo "${arg}"
+#  tag -r Blue "${arg}"
+  convert \
+    -density "90" \
+    "${arg}" \
+    -attenuate "0.15" \
+    +noise "Multiplicative" \
+    -rotate "${ROTATE}" \
+    "${arg%/*}/scanned_${arg##*/}"
+    pdfclean "${arg%/*}/${PREFIX}${arg##*/}"
+    tag -a Purple "${arg%/*}/${PREFIX}${arg##*/}"
+done

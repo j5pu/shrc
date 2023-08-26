@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Topdf.scpt" type="AppleScriptRunType" factoryName="AppleScript" scriptUrl="$PROJECT_DIR$/bin/Topdf.scpt" scriptParameters="&quot;$PROJECT_DIR$/../Downloads/2023 - Jose - Otero - Terapia - Pago.pages&quot;" logEvents="false">
+    <method v="2" />
+  </configuration>
+</component>

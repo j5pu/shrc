@@ -14,7 +14,7 @@ all() {
   tmp="$(mktemp)"
   find "${HOME}" -type f -name .shrc -exec dirname "{}" \; > "${tmp}"
   while read -r dir; do
-    (cd "${dir}" && SUPERPROJECT="$(superproject)" install)
+    (cd "${dir}" && superproject && install)
   done < "${tmp}"
   clean
 }
@@ -100,6 +100,8 @@ install() {
     link "${source}" "${target}"
   }
 
+  superproject
+
   isshrc
 
 
@@ -124,6 +126,18 @@ isshrc() { test -f "${SUPERPROJECT}/.shrc" || die  "${SUPERPROJECT} is not a shr
 #  None
 #######################################
 link() { relative "$1" "$2" || die "$1 -> $2 can not be created"; }
+
+#######################################
+# superproject or cwd
+# Arguments:
+#  None
+#######################################
+superproject() {
+  export SUPERPROJECT
+  SUPERPROJECT="$(git-superproject)"
+  [ ! "${SUPERPROJECT-}" ] || return 0
+  SUPERPROJECT="$(pwd -P)"
+}
 
 #######################################
 # uninstalls bin, man and bash_completion.d to shrc external directory
@@ -155,7 +169,6 @@ main() {
 
   function="install"
 
-  SUPERPROJECT="$(superproject)"
 
   for arg; do
     case "${arg}" in
@@ -163,7 +176,7 @@ main() {
     esac
   done
 
-  "${function}" "$@"
+  "${function}"
 }
 
 main "$@"

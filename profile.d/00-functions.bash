@@ -24,6 +24,13 @@ bash_export_funcs_path() { export -f $(filefuncs "$@"); }
 bash_export_funcs_public() { export_funcs_all | grep -v '^_'; }
 
 #######################################
+# Bash prompt
+# Arguments:
+#  None
+#######################################
+bash_prompt() { PS1="$(prompt $? "${SH-}")"; }
+
+#######################################
 # copy array name to _ARRAY
 # Globals:
 #   _ARRAY

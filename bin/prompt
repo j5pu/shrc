@@ -1,7 +1,6 @@
 #!/bin/sh
 # shellcheck disable=SC3028,SC3054,SC2153
 
-. color.sh
 
 brackets() { show "${Grey}" "["; show "$1" "$2"; show "${Grey}" "] "; }
 
@@ -54,7 +53,7 @@ title() { printf -- "%${string}" "${open}\033]0;\h@\u: \w\a${close}"; if [ "${1-
 
 user() { color="${Red}"; [ "$(id -u)" -eq 0 ] || color="${Green}"; show "${color}" "${RightIcon}"; }
 
-vcs() { cmd git || return 0 ; }
+vcs() { command -v git >/dev/null || return 0 ; }
 
 main() {
   rc="$(($1))"

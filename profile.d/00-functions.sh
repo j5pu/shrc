@@ -335,6 +335,15 @@ path_pop() {
 }
 
 #######################################
+# prompt title
+# Globals:
+#   SHRC_PROFILE_SOURCED
+# Arguments:
+#   None
+#######################################
+prompt_title() { prompt title; }
+
+#######################################
 # rebash
 # Globals:
 #   SHRC_PROFILE_SOURCED

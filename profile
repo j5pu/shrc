@@ -85,6 +85,9 @@ export SHRC_PROFILE_D="${SHRC}/profile.d"
 # SHRC generated libraries in  profile compat directory
 #
 export SHRC_PROFILE_D_GENERATED_D="${SHRC_PROFILE_D}/99-generated.d"
+# Forces SHRC prompt even if starship or zsh prompt are configured
+#
+: "${SHRC_PROMPT=0}"; export SHRC_PROMPT
 # SHRC share.
 #
 export SHRC_SHARE="${SHRC}/share"

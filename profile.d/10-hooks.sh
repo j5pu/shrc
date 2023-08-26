@@ -1,4 +1,4 @@
-# shellcheck shell=bash disable=SC2046
+# shellcheck shell=sh disable=SC2046
 
 addinfopath "${HOMEBREW_PREFIX?}/share/info" "${SHRC_SHARE}/info"
 addmanpath "${HOMEBREW_PREFIX?}/share/man" "${SHRC_SHARE}/man"
@@ -25,7 +25,22 @@ addpath $(find -L "${SHRC_EXTERNAL_BIN}" -type d)
 
 ! test -d "${HOMEBREW_PREFIX}/etc/profile.d" || source_files "${HOMEBREW_PREFIX}/etc/profile.d"/*
 bind -x '"\C-x\C-r": pet_select'
-! cmd starship || eval "$(starship init "${SH_HOOK}")"
+! cmd "env_parallel.${SH_HOOK}" || . "env_parallel.${SH_HOOK}"
+! cmd direnv || eval "$(direnv hook "${SH_HOOK}")"
+if cmd starship && [ "${SHRC_PROMPT}" -eq 0 ]; then
+  eval "$(starship init "${SH_HOOK}")"
+  case "${SH_HOOK}" in
+    bash) starship_precmd_user_func="prompt_title" ;;
+    zsh) precmd_functions+=(prompt_title) ;;
+  esac
+else
+  case "${SH_HOOK}" in
+    bash) export PROMPT_COMMAND="bash_prompt \$?${PROMPT_COMMAND:+; ${PROMPT_COMMAND}}" ;;
+    zsh)  PROMPT='$(prompt $? "${SH}")'; PROMPT2='$(prompt ps2 "${SH}" )' ;;
+    *) PS1="\$(prompt \$? ${SH})" ;;  # dash, sh, busybox need a script.
+  esac
+  PS2="$(prompt ps2 "${SH-}")"
+fi
 ! cmd thefuck || eval "$(thefuck --alias)"
 ! cmd zoxide || eval "$(zoxide init "${SH_HOOK}")"
 export PROMPT_COMMAND="history_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
