@@ -1,5 +1,7 @@
 ### Project
 external
+profile.d/99-generated.d/alias.sh
+sudo
 
 ### macOS template
 # General

@@ -5,13 +5,15 @@
 
 set -eu
 
-: "${SUDOC?}"
+: "${SUDO?}"
 
-if [ "${SUDOC-}" ]; then
-  if [ "${1-}" = "-S" ] && ! test -t 0 && [ "${PASSWORD-}" ]; then
-    echo "${PASSWORD}" | "${SUDOC}" "$@"
+if [ "${SUDO-}" ]; then
+  if test $# -eq 0; then
+    "${SUDO}" -i
+  elif [ "${1-}" = "-S" ] && ! test -t 0 && [ "${PASSWORD-}" ]; then
+    echo "${PASSWORD}" | "${SUDO}" "$@"
   else
-    "${SUDOC}" "$@"
+    "${SUDO}" "$@"
   fi
 else
   case "${1-}" in -K|-S) shift ;; esac

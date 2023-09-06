@@ -167,4 +167,7 @@ export SENTRY_DSN=""
 
 #export TERM='xterm-256color'
 
+export UMASK="0022"
 export VISUAL="${EDITOR}"
+
+export -f history_prompt

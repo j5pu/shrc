@@ -15,6 +15,9 @@
 # Default user and Git User
 #
 export GIT="j5pu"
+# Default user home
+#
+DEFAULT_HOME="$(eval echo ~"${GIT}")"; test -d "${DEFAULT_HOME}" || DEFAULT_HOME="${HOME}"; export DEFAULT_HOME
 # brew prefix
 #
 export HOMEBREW_PREFIX="/usr/local"
@@ -93,7 +96,7 @@ export SHRC_PROFILE_D_GENERATED_D="${SHRC_PROFILE_D}/99-generated.d"
 export SHRC_SHARE="${SHRC}/share"
 # sudo command path
 #
-SUDO="$(command -v sudo || true)"; export SUDO
+SUDO="$(! test -x /usr/bin/sudo || echo /usr/bin/sudo)"; export SUDO
 # Darwin or Linux
 #
 UNAME="$(uname -s)"; export UNAME
@@ -107,24 +110,6 @@ else
   export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
   export MACOS=false
 fi
-
-
-
-# true (bool) if BASH greater or equal to 4
-# sh as bash (3) exported functions are not seen as exported
-# sh as bash (3) has arrays
-# Exported arrays are not available in a new shell, but they are in a subshell
-#BASH4=false; [ "${BASH_VERSINFO:-0}" -lt 4 ] || BASH4=true
-# shrc shell for commands hooks: bash or zsh
-#
-#SHRC_HOOKS="$(basename "${BASH:-${ZSH_NAME}}" | sed 's/^sh$/bash/')"; export SHRC_HOOKS
-# shrc shell to source libs: bash4, bash or zsh
-#
-#SHRC_SHELL="$(if $BASH4; then echo bash4; else echo "${SHRC_HOOKS}"; fi )"; export SHRC_SHELL
-# Set to the shell name, if it is being sourced directly by a shell directly not script
-# Helps when this is sourced by a script that completions are not sourced
-#SHRC_ARGZERO="$(case "${0##*/}" in -ash|ash|-bash|bash|busybox|-dash|dash|-ksh|ksh|-sh|sh|-zsh|zsh) echo "${0##*/}" | sed 's/^-//'; esac)"
-
 
 #######################################
 # get running shell
@@ -315,20 +300,5 @@ for __file in $(printf "%s\n" \
   source_files "${__file}"
 done
 unset __file
-# source: posix (common to all shells)
-#
-#source_files "${SHRC_PROFILE_D}"/??*.sh "${SHRC_PROFILE_D}"/??*.d/*.sh  "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*.sh
-
-
-# source: bash and zsh hooks
-#
-#if [ "${SH_SOURCE-}" ]; then
-#  source_files "${SHRC_PROFILE_D}"/??*."${SH_SOURCE}" \
-#    "${SHRC_PROFILE_D}"/??*.d/*."${SH_SOURCE}" \
-#    "${SHRC_PROFILE_D}/${UNAME}.d"/*.d/*."${SH_SOURCE}"
-#fi
-#
-#! cmd bash4_source_files_ps1 || bash4_source_files_ps1 "${SHRC_COMPLETION_D}"/**/*
-#! cmd bash_export_funcs_public || bash_export_funcs_public
 
 SHRC_PROFILE_SOURCED=1

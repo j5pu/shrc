@@ -21,7 +21,7 @@ bash_export_funcs_path() { export -f $(filefuncs "$@"); }
 # Arguments:
 #  None
 #######################################
-bash_export_funcs_public() { export_funcs_all | grep -v '^_'; }
+bash_export_funcs_public() { bash_export_funcs_all | grep -v '^_'; }
 
 #######################################
 # Bash prompt

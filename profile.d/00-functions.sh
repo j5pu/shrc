@@ -114,6 +114,113 @@ cd_top() {
 #######################################
 cd_top_exit() { cd_top || exit; }
 
+
+#######################################
+# generate cd aliases
+# Globals:
+#   SHRC_PROFILE_SOURCED
+# Arguments:
+#   None
+#######################################
+generate_aliases() {
+  ! test -f "${SHRC_PROFILE_D_GENERATED_D}/alias.sh" || return 0
+
+  _aliases_directories="${DEFAULT_HOME}"
+  _aliases_tmp="$(mktemp)"
+
+  for _aliases_directory in "${DEFAULT_HOME}/Archive" "${DEFAULT_HOME}/Documents" /Volumes; do
+    ! test -d "${_aliases_directory}" || _aliases_directories="${_aliases_directories} ${_aliases_directory}"
+  done
+
+
+  {
+    echo '# shellcheck shell=sh'
+    echo
+    # shellcheck disable=SC2016
+    echo '{ [ "${PS1-}" ] && [ "${SH_ARGZERO-}" ] && [ "${SH_HOOK-}" ]; }'
+    echo
+  } > "${SHRC_PROFILE_D_GENERATED_D}/alias.sh"
+
+  {    # shellcheck disable=SC2086
+    q="'" find -L ${_aliases_directories} -type d -mindepth 1 -maxdepth 1 -not \( -name ".git" -o -name ".idea" \) \
+      -exec sh -c 'v="$(echo "${1##*/}" | sed "s/ //g;s/(//g;s/)//g")"; echo alias .${v}=${q}cd \"$1\"$q' sh {} \;
+
+    if $MACOS; then
+      for _aliases_directory in "Application Support" LaunchAgents Preferences; do
+        echo "alias .$(echo "${_aliases_directory}" \
+          | sed "s/ //g")='cd \"${DEFAULT_HOME}/Library/${_aliases_directory}\"'"
+      done
+    fi
+  } > "${_aliases_tmp}"
+
+  sort -u "${_aliases_tmp}" >> "${SHRC_PROFILE_D_GENERATED_D}/alias.sh"
+
+  . "${SHRC_PROFILE_D_GENERATED_D}/alias.sh"
+
+  unset _aliases_directories _aliases_directory
+}
+
+
+#######################################
+# generate cd aliases
+# Globals:
+#   SHRC_PROFILE_SOURCED
+# Arguments:
+#   None
+#######################################
+generate_sudo() {
+  { ! test -f "${SHRC}/sudo/apt" && [ "${SUDO-}" ]; }  || return 0
+  mkdir -p "${SHRC}/sudo"
+
+  for _sudo_command in \
+    a2dismod a2dismode a2dissite a2enmod a2enmode a2ensite add-apt-repository addgroup adduser apache2 apache2ctl\
+    apachectl apt apt-add-repository apt-cache apt-file apt-get aptitude AssetCacheManagerUtil automysqlbackup \
+    certbot chattr chflags chgrp chkrootkit chmod chown configure-debian cubic \
+    date dd debconf debconf-set-selections debi debuild delgroup deluser depmod df dhclient dig diskutil dkms dlocate \
+    dmesg dnstop dpkg dpkg-reconfigure dpkg-source drill dscacheutil dscl du \
+    fail2ban fail2ban-client fdisk fkill flatpak fsck fuser getent gparted grub-mkconfig \
+    hostnamectl htpasswd hwclock \
+    ifconfig ip iptables iptables_save iw \
+    journalctl \
+    kextload kill killall \
+    locale-gen locate losetup lsblk lshw lsof lspci lsusb lvdisplay \
+    make-kpkg mdfind mkfs mkfs.ext4 mkpasswd modprobe mount mtr \
+    mysql mysql_secure_installation mysql_upgrade mysqld_safe mysqldump \
+    nc ncat netfilter-persistent netplan netstat networkctl networksetup nginx nield nmap nmcli nping nslookup \
+    openvpn opkg \
+    parted partprobe partx pecl phpdismod phpenmod ping pkill polo-disk postfix poweroff pre-up pvscan \
+    qemu-nbd \
+    reboot rkhunter rmmod rndc route \
+    scutil service smartctl software-properties-gtk softwareupdate spctl ss \
+    swapoff swapon sysctl systemd-analyze systemd-resolve sysupgrade \
+    tasksel tcpdump tcptrack telnet tmutil traceroute trash \
+    udevadm ufw umount unbound-anchor unbound-host \
+    update-alternatives update-grub update-grub2 update-locale update-manager update-rc.d updatedb useradd usermod \
+    vgchange vgscan \
+    wg wg-quick whois wpa_passphrase wpa_supplicant \
+    xattr \
+    zenmap; do
+
+      if $MACOS; then
+        case "${_sudo_command}" in
+          apt|updatedb) continue ;;
+        esac
+      fi
+
+      if cmd "${_sudo_command}"; then
+        {
+          echo "#!/bin/sh"
+          echo
+          echo "${SUDO} $(command -pv "${_sudo_command}") \"\$@\""
+        } > "${SHRC}/sudo/${_sudo_command}"
+
+        /bin/chmod +x "${SHRC}/sudo/${_sudo_command}"
+      fi
+  done
+
+  unset _sudo_command
+}
+
 #######################################
 # has alias, command or function (uses type)
 # Arguments:
@@ -350,7 +457,9 @@ prompt_title() { prompt title; }
 # Arguments:
 #   None
 #######################################
-rebash() { unset SHRC_PROFILE_SOURCED && . /etc/profile; }
+rebash() {
+  unset SHRC_PROFILE_SOURCED && rm -rf "${SHRC_PROFILE_D_GENERATED_D}/alias.sh" "${SHRC}/sudo/"* && . /etc/profile
+}
 
 #######################################
 # source directory using find instead of globs
