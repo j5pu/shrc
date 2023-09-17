@@ -21,7 +21,9 @@ addpath $(find -L "${SHRC_EXTERNAL_BIN}" -type d)
 
 ! cmd bash_export_funcs_public || bash_export_funcs_public
 
+
 { [ "${PS1-}" ] && [ "${SH_ARGZERO-}" ] && [ "${SH_HOOK-}" ]; } || return 0
+
 
 generate_aliases
 generate_sudo
@@ -62,5 +64,6 @@ export PROMPT_COMMAND="history_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 $BASH4 || return 0
 
 source_files  "${SHRC_COMPLETION_D}"/**/*
-[ "${JEDI_TOP}" = "${SHRC}" ] || source_files  "${JEDI_TOP}/bash_completion.d"
+[ "${JEDI_TOP}" = "${SHRC}" ] || ! test -d  "${JEDI_TOP}/bash_completion.d" || \
+  source_files  "${JEDI_TOP}/bash_completion.d"/*
 source_files  "${SHRC_EXTERNAL_COMPLETION_D}"/*

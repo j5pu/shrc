@@ -111,8 +111,6 @@ export HOMEBREW_NO_ENV_HINTS=1
 export HOMEBREW_PRY=1
 export HOMEBREW_REPOSITORY="${HOMEBREW_PREFIX}/Homebrew";
 # export HOMEBREW_TEMP="/Volumes/USB-2TB/tmp"
-# HOMEBREW_UPDATE_REPORT_ONLY_INSTALLED       If set, brew update only lists updates to installed software.
-export HOMEBREW_UPDATE_REPORT_ONLY_INSTALLED=1
 
 #export LANG='en_US.UTF-8'
 
