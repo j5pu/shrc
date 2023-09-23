@@ -6,7 +6,7 @@ addpath "${HOMEBREW_PREFIX}/bin" "${HOMEBREW_PREFIX}/sbin" "${HOME}/bin" "${HOME
   "${SHRC_BIN}" "${SHRC}/sudo" "${SHRC_LIB}" "${SHRC_GENERATED_COLOR}"
 ! cmd pyenv || { eval "$(pyenv init --path)"; eval "$(pyenv init -)"; }
 
-if isjedi && [ "${JEDI_TOP}" != "${SHRC}" ]; then
+if isjedi && [ "${JEDI_TOP}" != "${SHRC}" ] && [ "${JEDI_TOP}" != "${HOME}" ]; then
   addinfopath "${JEDI_TOP}/share/info"
   addmanpath "${JEDI_TOP}/share/man"
   addpath "${JEDI_TOP}/bin"
@@ -19,22 +19,26 @@ source_files $(printf "%s\n" "${SHRC_EXTERNAL_PROFILE_D}"/*.sh  \
 addmanpath $(find -L "${SHRC_EXTERNAL_MAN}" -type d)
 addpath $(find -L "${SHRC_EXTERNAL_BIN}" -type d)
 
-! cmd bash_export_funcs_public || bash_export_funcs_public
+[ "${INTELLIJ_ENVIRONMENT_READER-}" ] || ! cmd bash_export_funcs_public || bash_export_funcs_public
 
 
 { [ "${PS1-}" ] && [ "${SH_ARGZERO-}" ] && [ "${SH_HOOK-}" ]; } || return 0
 
-
-generate_aliases
-generate_sudo
+[ "${INTELLIJ_ENVIRONMENT_READER-}" ] || generate_aliases
+[ "${INTELLIJ_ENVIRONMENT_READER-}" ] || generate_sudo
 
 ! test -d "${HOMEBREW_PREFIX}/etc/profile.d" || source_files "${HOMEBREW_PREFIX}/etc/profile.d"/*
+
+# https://youtrack.jetbrains.com/articles/IDEA-A-19/Shell-Environment-Loading
+#
+[ ! "${INTELLIJ_ENVIRONMENT_READER-}" ] || return 0
 
 bind -x '"\C-x\C-r": pet_select'
 
 ! cmd "env_parallel.${SH_HOOK}" || . "env_parallel.${SH_HOOK}"
 
 ! cmd direnv || { eval "$(direnv hook "${SH_HOOK}")" && export -f _direnv_hook; }
+
 
 if cmd starship && [ "${SHRC_PROMPT}" -eq 0 ]; then
   eval "$(starship init "${SH_HOOK}")"

@@ -282,7 +282,7 @@ EOF
 #   0 ...
 #######################################
 isjedi() {
-  [ "${TERMINAL_EMULATOR-}" = "JetBrains-JediTerm" ] || [ "${TTY-}" = "not a tty" ] || return
+  [ "${TERMINAL_EMULATOR-}" = "JetBrains-JediTerm" ] || [ "${TTY-}" = "not a tty" ] || $INTELLIJ || return
   # Set to top level of project if running in run or in jediterm
   #
   export JEDI_TOP

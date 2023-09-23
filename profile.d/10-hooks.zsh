@@ -1,5 +1,7 @@
 # shellcheck shell=zsh disable=SC2034
 
+[ ! "${INTELLIJ_ENVIRONMENT_READER-}" ] || return 0
+
 zsh_bashcompinit
 
 setopt INTERACTIVE_COMMENTS  # allow inline comments like this one

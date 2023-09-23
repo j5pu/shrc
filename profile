@@ -24,6 +24,9 @@ export HOMEBREW_PREFIX="/usr/local"
 # Short hostname
 #
 HOST="$(hostname -s)"; export HOST
+# true if IntelliJ IDEA is running
+# https://youtrack.jetbrains.com/articles/IDEA-A-19/Shell-Environment-Loading
+export INTELLIJ=true; [ "${INTELLIJ_ENVIRONMENT_READER-}" ]  || INTELLIJ=false
 # true if Darwin, false if Linux
 #
 export MACOS=true

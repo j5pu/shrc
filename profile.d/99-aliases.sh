@@ -1,5 +1,6 @@
 # shellcheck shell=sh
 
+[ ! "${INTELLIJ_ENVIRONMENT_READER-}" ] || return 0
 ! test -f "${HOMEBREW_PREFIX}/etc/grc.sh" || GRC_ALIASES=true . "${HOMEBREW_PREFIX}/etc/grc.sh"
 
 alias atlasip='atlas accessLists create $(mydigip)/32'
