@@ -154,7 +154,7 @@ export PYTHONASYNCIODEBUG=0
 # [3] https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUNBUFFERED
 # PYTHONDONTWRITEBYTECODE                     If set, python won’t try to write .pyc files on the import of source
 #                                             modules. This is equivalent to specifying the -B option.
-export PYTHONDONTWRITEBYTECODE=1
+#export PYTHONDONTWRITEBYTECODE=1
 export PYTHONFAULTHANDLER=1
 export PYTHONUNBUFFERED=1
 # PYTHONNOUSERSITE                            If this is set, Python won’t add the user site-packages
