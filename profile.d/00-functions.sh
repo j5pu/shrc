@@ -5,6 +5,14 @@
 export GIT_TOP=""
 
 #######################################
+# activate venv
+#######################################
+activate() {
+  test -d venv || return 0
+  . venv/bin/activate
+}
+
+#######################################
 # # Prepend paths to INFOPATH
 # Globals:
 #   PATH
@@ -484,4 +492,3 @@ source_dir() {
 #  user     default $GIT or $USER
 #######################################
 source_files_if_bash4_and_ps1() { ! $BASH4 || [ ! "${PS1-}" ] || source_files "$@"; }
-
