@@ -104,15 +104,19 @@ getvalue() {
 #   $__history_prompt_rc ...
 #######################################
 history_prompt() {
-  local __history_prompt_rc=$? activate file line prompt top venv
+  local __history_prompt_rc=$? activate file line prompt src top venv
 
   # bashsupport disable=BP2001
-  export PYTHONPATH
-  ! test -d "${PWD}/src" || [[ "${PYTHONPATH}" =~ ${PWD}/src ]] || PYTHONPATH="${PYTHONPATH:+${PYTHONPATH}:}${PWD}/src"
+  export PYTHONPATH _PYTHONPATH_PREVIOUS
 
   top="$(git rev-parse --show-toplevel 2>/dev/null || echo "$PWD")"
   venv="${top}/venv"
   if test -d "${venv}"; then
+    src="${PWD}/src"
+    ! test -d "${src}" || [[ "${PYTHONPATH}" =~ ${src} ]] || {
+      _PYTHONPATH_PREVIOUS="${PYTHONPATH-}"
+      PYTHONPATH="${PYTHONPATH:+${PYTHONPATH}:}${src}"
+    }
     activate="${venv}/bin/activate"
     prompt="(${top##*/})"
     test -f "${activate}" || python3 -m venv "${venv}" --prompt "."
@@ -133,6 +137,7 @@ history_prompt() {
     export VIRTUAL_ENV_PROMPT="${prompt} "
   elif cmd deactivate; then
     deactivate
+    PYTHONPATH="${_PYTHONPATH_PREVIOUS-}"
   fi
 
   history -a; history -c; history -r; hash -r
