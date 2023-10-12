@@ -140,7 +140,7 @@ export PIP_DISABLE_PIP_VERSION_CHECK=1
 # Overrides location of app installations. Apps are symlinked or copied here
 #
 export PIPX_BIN_DIR="/usr/local/bin"
-PIPX_DEFAULT_PYTHON="$(deactivate 2>/dev/null; which python${PYTHON_DEFAULT_VERSION})"; export PIPX_DEFAULT_PYTHON
+PIPX_DEFAULT_PYTHON="$(deactivate 2>/dev/null; which python${PYTHON_DEFAULT_VERSION?})"; export PIPX_DEFAULT_PYTHON
 
 # https://docs.pytest.org/en/stable/reference/reference.html#envvar-PYTEST_THEME_MODE
 #
