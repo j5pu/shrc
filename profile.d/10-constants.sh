@@ -125,10 +125,15 @@ export LSCOLORS="ExGxBxDxCxEgEdxbxgxcxd"
 if cmd most; then
   export MANPAGER=most
 else
+  export PAGER=less
+fi
+
+if cmd ov; then
+  export PAGER=ov
+else
   export MANPAGER=less
 fi
 
-export PAGER=less
 
 ###################################### PIP
 # https://pip.pypa.io/en/stable/topics/configuration/
