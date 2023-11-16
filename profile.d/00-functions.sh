@@ -441,7 +441,7 @@ path_in() {
 path_pop() {
   [ "${2:-PATH}" = "MANPATH" ] || _path_pop_strip=":"
   _path_pop_real="$(pwd_p "${1:-${PWD}}" 2>/dev/null)"
-  # FIXME: bats gives error "grep: brackets ([ ]) not balanced" when calling bats::env
+  # ARREGLAR: bats gives error "grep: brackets ([ ]) not balanced" when calling bats::env
   _path_pop_value="$(eval echo "\$${2:-PATH}" | sed 's/:$//' | tr ':' '\n' | \
     grep -v "^${_path_pop_real}$" | tr '\n' ':' | sed "s|${_path_pop_strip-}$||")"
   [ "${_path_pop_value}" != ":" ] || _path_pop_value=""

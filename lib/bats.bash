@@ -508,7 +508,7 @@ _main() {
   _bats_libs || return
   _functions || return
 
-  # FIXME: bats gives error "grep: brackets ([ ]) not balanced" when calling bats::env
+  # ARREGLAR: bats gives error "grep: brackets ([ ]) not balanced" when calling bats::env
 #  bats::env || return
 
   _docker "$@" || return

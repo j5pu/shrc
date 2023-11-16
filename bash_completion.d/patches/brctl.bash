@@ -49,7 +49,7 @@ _brctl_macos() {
   ! $files || { _filedir; _filedir -d; }
 }
 
-# FIXME: completions does not load from external and I doubt from the other
+# ARREGLAR: completions does not load from external and I doubt from the other
 #   finish with the install and move jetbrains a jetbrains. Put jetbrains en el installer?
 #   - Put spanish
 #   - check applications

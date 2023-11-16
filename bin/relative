@@ -159,7 +159,7 @@ main() {
   TARGET_ABSOLUTE="${target_dirname}/${target_basename}"
 
   [ "${SOURCE_ABSOLUTE}" != "${TARGET_ABSOLUTE}" ] || die "${TARGET_ABSOLUTE} source and target are identical"
-  # FIXME: remove realpath
+  # ARREGLAR: remove realpath
   ! test -h "${TARGET_ABSOLUTE}" || [ "$(realpath "${TARGET_ABSOLUTE}")" != "${SOURCE_ABSOLUTE}" ] || exit 0 # nothing to do
 
   ! $force || if with_sudo rm -rf "${TARGET_ABSOLUTE}"; then
