@@ -52,3 +52,10 @@ jetbrains plist to start the LaunchAgent
 
 Application configurations that can be configured with global variables and do not contain secrets.
 
+## Install
+* run sudoers
+* install brew
+* run install
+
+ov
+icloud aliases

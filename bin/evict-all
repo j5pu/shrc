@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+#find -H -L "$(realpath ~/Library/Mobile\ Documents)" -mindepth 1 -type f \
+#  -not -name ".DS_Store" \
+#  -and -not -name "*.icloud" \
+#  -and -not -name "*.pkpass" \
+#  -and -not -path "*/*.app/*" \
+#  -and -not -path "*/*.clipsproject/*" \
+#  -and -not -path "*/*.epub/*" \
+#  -and -not -path "*/*.framework/*" \
+#  -and -not -path "*/*.key/*" \
+#  -and -not -path "*/*.key-tef/*" \
+#  -and -not -path "*/*.numbers/*" \
+#  -and -not -path "*/*.numbers-tef/*" \
+#  -and -not -path "*/*.pages/*" \
+#  -and -not -path "*/*.pages-tef/*" \
+#  -and -not -path "*/*.pkpass/*" \
+#  -and -not -path "*/*.pkpass/*" \
+#  -and -not -path "*/*.rtfd/*" \
+#  -and -not -path "*/*.scptd/*" \
+#  -and -not -path "*/*.sites2/*" \
+#  -and -not -path "*/*.workflow/*" \
+#  -and -not -path "*/*.xcodeproj/*" \
+#  -and -not -path "*/com~apple~shoebox/*" \
+#  -exec brctl evict "{}" \; 2>&1 | grep -v "evicted content of "
+find -H -L "$(realpath ~/Library/Mobile\ Documents)" -mindepth 1 -type d \
+  -not -name "com~apple~shoebox" \
+  -and -not -path "*.key/Contents" \
+  -and -not -path "*.key/Data" \
+  -and -not -path "*.key/Metadata" \
+  -and -not -path "*.key/QuickLook" \
+  -and -not -path "*.key/thumbs" \
+  -and -not -path "*.key-tef/index.key" \
+  -and -not -path "*.key-tef/Previews" \
+  -and -not -path "*/com~apple~shoebox*" \
+  -exec brctl evict "{}" \; 2>&1 | grep -v "evicted content of "
+

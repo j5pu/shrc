@@ -1,7 +1,0 @@
-#!/usr/local/bin/bash
-
-find -H -L "$(realpath ~/Library/Mobile\ Documents)" -mindepth 1 -not -name ".DS_Store" \
-  -and -not -name "*.icloud" -exec brctl evict "{}" \; 2>&1 \| grep -v "evicted content of "
-find -H -L "$(realpath ~/Library/Mobile\ Documents)" -mindepth 1 -type d \
-  -exec brctl evict "{}" \; 2>&1 | grep -v "evicted content of "
-

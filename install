@@ -3,10 +3,28 @@
 set -eu
 
 SHRC="$(cd "$(dirname "$0")" && pwd)"
+PATH="${SHRC}/bin:${PATH}"
 export SHRC_PREFIX="${SHRC%/*}"
 . "${SHRC}/profile"
 
+
+brew_install() {
+  if ! test -f /usr/local/bin/brew && ! test -f /opt/homebrew/bin/brew && ! test -f /home/linuxbrew/.linuxbrew && \
+    [ "$(id -u)" -ne 0 ] && command -v bash >/dev/null; then
+      CI=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      . "${SHRC}/profile"
+      brew bundle install --no-lock --cleanup
+  fi
+}
+
+icloud() {
+  [ "${LIBRARY-}" ] || return 0
+  ! test -e "${MOBILE}" || test -L "${DEFAULT_HOME}/Mobile" || ln -s "${MOBILE}" "${DEFAULT_HOME}/Mobile"
+  ! test -e "${ICLOUD}" || test -L "${DEFAULT_HOME}/iCloud" || ln -s "${ICLOUD}" "${DEFAULT_HOME}/iCloud"
+}
+
 profile() {
+  # TODO: tmp
   "${SUDO}" tee /etc/profile > /dev/null <<EOF
 # System-wide .profile for sh(1)
 # Updated by "$0" on: $(date)
@@ -26,7 +44,18 @@ EOF
 }
 
 main() {
+  sudoers
+  brew_install
   profile
+  icloud
+  generate_aliases
+  generate_sudo
 }
 
+# TODO: brew install
+# TODO: Git sync shrc
+#   secrets .ssh
+#   los que instala brew que los instale si no están en macOS
+#   arreglar los casks y meter con mas
+#   purge
 main "$@"

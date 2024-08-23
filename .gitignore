@@ -1,7 +1,9 @@
 ### Project
 external
 profile.d/99-generated.d/alias.sh
-sudo
+/sudo/*
+/profile.d/99-generated.d/alias.sh
+!/sudo/.gitkeep
 
 ### macOS template
 # General

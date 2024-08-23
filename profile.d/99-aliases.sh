@@ -4,11 +4,10 @@
 ! test -f "${HOMEBREW_PREFIX}/etc/grc.sh" || GRC_ALIASES=true . "${HOMEBREW_PREFIX}/etc/grc.sh"
 
 alias atlasip='atlas accessLists create $(mydigip)/32'
-alias bb=" brew update && brew upgrade && brew cleanup && brew autoremove && brew bundle dump --force && \
+alias bb=" brew update && brew upgrade && brew cu -f && brew cleanup && brew autoremove && brew bundle dump --force && \
   brew bundle install --no-lock --cleanup && brew cleanup --prune=all"
 if cmd docker; then
   alias ddisk="docker system df"
-
   alias devents="docker system events"
   alias dimagesall="docker images -a"
   alias dinfo="docker system info"
@@ -16,7 +15,7 @@ if cmd docker; then
 fi
 ! cmd direnv || { alias allow='direnv allow'; alias reload='direnv reload'; }
 alias disco="du -sh"
-! cmd exa || alias exa='exa --classify'
+! cmd eza || alias eza='eza --classify'
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
 alias fgrep='fgrep --color=auto'

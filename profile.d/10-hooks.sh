@@ -4,7 +4,7 @@ addinfopath "${HOMEBREW_PREFIX?}/share/info" "${SHRC_SHARE}/info"
 addmanpath "${HOMEBREW_PREFIX?}/share/man" "${SHRC_SHARE}/man"
 addpath "${HOMEBREW_PREFIX}/bin" "${HOMEBREW_PREFIX}/sbin" "${HOME}/bin" "${HOME}/.local/bin" \
   "${SHRC_BIN}" "${SHRC}/sudo" "${SHRC_LIB}" "${SHRC_GENERATED_COLOR}"
-! cmd pyenv || { eval "$(pyenv init --path)"; eval "$(pyenv init -)"; }
+! cmd pyenv || { eval "$(pyenv init --path)" || true; eval "$(pyenv init -)" || true; }
 
 if isjedi && [ "${JEDI_TOP}" != "${SHRC}" ] && [ "${JEDI_TOP}" != "${HOME}" ]; then
   addinfopath "${JEDI_TOP}/share/info"
@@ -19,8 +19,16 @@ source_files $(printf "%s\n" "${SHRC_EXTERNAL_PROFILE_D}"/*.sh  \
 addmanpath $(find -L "${SHRC_EXTERNAL_MAN}" -type d)
 addpath $(find -L "${SHRC_EXTERNAL_BIN}" -type d)
 
-[ "${INTELLIJ_ENVIRONMENT_READER-}" ] || ! cmd bash_export_funcs_public || bash_export_funcs_public
 
+# Overrides location of app installations. Apps are symlinked or copied here
+#
+if cmd pipx; then
+  PIPX_BIN_DIR="$(dirname "$(command -v pipx)")"; export PIPX_BIN_DIR
+  PIPX_DEFAULT_PYTHON="$(! cmd deactivate || deactivate; command -v python"${PYTHON_DEFAULT_VERSION?}" || true)"
+  export PIPX_DEFAULT_PYTHON
+fi
+
+[ "${INTELLIJ_ENVIRONMENT_READER-}" ] || ! cmd bash_export_funcs_public || bash_export_funcs_public
 
 { [ "${PS1-}" ] && [ "${SH_ARGZERO-}" ] && [ "${SH_HOOK-}" ]; } || return 0
 
@@ -30,15 +38,14 @@ addpath $(find -L "${SHRC_EXTERNAL_BIN}" -type d)
 ! test -d "${HOMEBREW_PREFIX}/etc/profile.d" || source_files "${HOMEBREW_PREFIX}/etc/profile.d"/*
 
 # https://youtrack.jetbrains.com/articles/IDEA-A-19/Shell-Environment-Loading
-#
+# https://intellij-support.jetbrains.com/hc/en-us/articles/15268184143890-Shell-Environment-Loading
 [ ! "${INTELLIJ_ENVIRONMENT_READER-}" ] || return 0
 
-bind -x '"\C-x\C-r": pet_select'
+! cmd bind || bind -x '"\C-x\C-r": pet_select'
 
 ! cmd "env_parallel.${SH_HOOK}" || . "env_parallel.${SH_HOOK}"
 
-! cmd direnv || { eval "$(direnv hook "${SH_HOOK}")" && export -f _direnv_hook; }
-
+! cmd direnv || { eval "$(direnv hook "${SH_HOOK}")" && [ "${SH_HOOK}" = "bash" ] && export -f _direnv_hook; }
 
 if cmd starship && [ "${SHRC_PROMPT}" -eq 0 ]; then
   eval "$(starship init "${SH_HOOK}")"

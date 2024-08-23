@@ -20,13 +20,13 @@ export GIT="j5pu"
 DEFAULT_HOME="$(eval echo ~"${GIT}")"; test -d "${DEFAULT_HOME}" || DEFAULT_HOME="${HOME}"; export DEFAULT_HOME
 # brew prefix
 #
-export HOMEBREW_PREFIX="/usr/local"
+export HOMEBREW_PREFIX="/usr/local"; [ "$(uname -p)" != "arm" ] || export HOMEBREW_PREFIX="/opt/homebrew"
 # Short hostname
 #
 HOST="$(hostname -s)"; export HOST
 # true if IntelliJ IDEA is running
 # https://youtrack.jetbrains.com/articles/IDEA-A-19/Shell-Environment-Loading
-export INTELLIJ=true; [ "${INTELLIJ_ENVIRONMENT_READER-}" ]  || INTELLIJ=false
+export INTELLIJ=true; [ "${INTELLIJ_ENVIRONMENT_READER-}" ]  || export INTELLIJ=false
 # true if Darwin, false if Linux
 #
 export MACOS=true
@@ -149,6 +149,7 @@ shell() {
   # Set to the shell name, if it is being sourced directly by a shell directly not script
   # ash, bash, busybox, dash, ksh, sh, zsh or "" if not sourced by a shell directly.
   # Helps when this is sourced by a script that completions are not sourced
+  # shellcheck disable=SC2034
   SH_ARGZERO=""
 
   # shell for commands hooks: bash (bash for bash sh), zsh or ""
@@ -161,6 +162,7 @@ shell() {
 
   # true (bool) if sourced or running in ZSH false if not
   #
+  # shellcheck disable=SC2034
   ZSH=false
 
   #######################################
@@ -192,9 +194,9 @@ shell() {
       # ls ./* does not give error if no files, that is failglob)
       shopt -s inherit_errexit extglob globstar gnu_errfmt
 
-      enable -f mypid enable_mypid
-      enable -f truefalse false
-      enable -f truefalse true
+#      enable -f mypid enable_mypid
+#      enable -f truefalse false
+#      enable -f truefalse true
       for i in accept csv dsv fdflags finfo \
         id logname mkfifo mktemp pathchk printenv \
         push setpgid sleep strftime sync tee tty whoami; do
@@ -239,9 +241,10 @@ shell() {
     [ "${SH-}" ] || SH="$1"
     SH="${SH##*/}"
   }
-
-  case "${SH}" in
+  # shellcheck disable=SC2034
+  case "${SH##*/}" in
     -ash|ash|-bash|bash|-busybox|busybox|-dash|dash|-ksh|ksh|-sh|sh)
+      # shellcheck disable=SC2034
       SH_ARGZERO="$(echo "${0##*/}" | sed 's/^-//')"
       if [ "${BASH_SOURCE-}" ]; then
         __bash
@@ -249,7 +252,7 @@ shell() {
         __real "${ZSH_ARGZERO:-$0}"
       fi
       ;;
-    -zsh|zsh) SH="zsh"; SH_ARGZERO="zsh"; SH_HOOK="zsh"; SH_SOURCE="zsh"; ZSH=true ;;
+    -zsh|zsh) SH="zsh"; SH_ARGZERO="zsh"; SH_HOOK="zsh"; SH_SOURCE="zsh"; ZSH=true;;
     *)
       if [ "${BASH-}" ]; then
         __bash
@@ -292,15 +295,23 @@ done
 
 shell
 
+! $ZSH || setopt +o nomatch
+
 for __file in $(printf "%s\n" \
-  "${SHRC_PROFILE_D}"/??*.sh "${SHRC_PROFILE_D}"/??*."${SH_HOOK}" "${SHRC_PROFILE_D}"/??*."${SH_SOURCE}" \
-  "${SHRC_PROFILE_D}"/??*.d/*.sh "${SHRC_PROFILE_D}"/??*.d/*."${SH_HOOK}" "${SHRC_PROFILE_D}"/??*.d/*."${SH_SOURCE}" \
-  "${SHRC_PROFILE_D}/${UNAME}"*.sh "${SHRC_PROFILE_D}/${UNAME}"*."${SH_HOOK}" "${SHRC_PROFILE_D}/${UNAME}"*."${SH_SOURCE}" \
+  "${SHRC_PROFILE_D}"/??-*.sh \
+  "${SHRC_PROFILE_D}"/??-*."${SH_HOOK}" \
+  "${SHRC_PROFILE_D}"/??-*."${SH_SOURCE}" \
+  "${SHRC_PROFILE_D}"/??-*.d/*.sh \
+  "${SHRC_PROFILE_D}"/??-*.d/*."${SH_HOOK}" \
+  "${SHRC_PROFILE_D}"/??-*.d/*."${SH_SOURCE}" \
+  "${SHRC_PROFILE_D}/${UNAME}"*.sh \
+  "${SHRC_PROFILE_D}/${UNAME}"*."${SH_HOOK}" \
+  "${SHRC_PROFILE_D}/${UNAME}"*."${SH_SOURCE}" \
   "${SHRC_PROFILE_D}/${UNAME}.d"/**/*.sh \
   "${SHRC_PROFILE_D}/${UNAME}.d"/**/*."${SH_HOOK}" \
   "${SHRC_PROFILE_D}/${UNAME}.d"/**/*."${SH_SOURCE}" \
   | sort -u); do
-  source_files "${__file}"
+   source_files "${__file}"
 done
 unset __file
 

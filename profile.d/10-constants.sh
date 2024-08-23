@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 
-export PYTHON_DEFAULT_VERSION="3.11"
+export PYTHON_DEFAULT_VERSION="3.12"
 
 # Depends on: [00-functions.d/cmd.sh](../00-functions.d/cmd.sh)
 #
@@ -97,7 +97,9 @@ export HISTFILE=~/.bash_history_unlimited
 ###################################### HOMEBREW
 # https://docs.brew.sh/Manpage#bundle-subcommand
 export HOMEBREW_BAT=1
-export HOMEBREW_BUNDLE_FILE="${SHRC_PACKAGES?}/${UNAME}/${HOST}/Brewfile"
+# https://gist.github.com/chadmayfield/ada07e4e506d7acd577a665541a70c9b
+# https://homebrew-file.readthedocs.io/en/latest/usage.html
+export HOMEBREW_BUNDLE_FILE="${SHRC_PACKAGES?}/${UNAME}/Brewfile"
 #  export HOMEBREW_CELLAR="${HOMEBREW_PREFIX}/Cellar"
 export HOMEBREW_CASK_OPTS="--appdir=/Applications --no-quarantine"
 export HOMEBREW_CELLAR="${HOMEBREW_PREFIX}/Cellar";
@@ -141,11 +143,6 @@ fi
 # PIP_DISABLE_PIP_VERSION_CHECK             If set, don’t periodically check PyPI to determine whether
 #                                            a new version of pip is available for download.
 export PIP_DISABLE_PIP_VERSION_CHECK=1
-
-# Overrides location of app installations. Apps are symlinked or copied here
-#
-export PIPX_BIN_DIR="/usr/local/bin"
-PIPX_DEFAULT_PYTHON="$(deactivate 2>/dev/null; which python${PYTHON_DEFAULT_VERSION?})"; export PIPX_DEFAULT_PYTHON
 
 # https://docs.pytest.org/en/stable/reference/reference.html#envvar-PYTEST_THEME_MODE
 #

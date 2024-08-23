@@ -24,10 +24,14 @@ activate() {
 addinfopath() {
   for arg; do
     test -d "${arg}" || continue
-    case ":${INFOPATH}:"  in
-      *":${arg}:"*) continue ;;
-    esac
-    export INFOPATH="${arg}${INFOPATH:+:"${INFOPATH}"}"
+    if [ "${INFOPATH-}" ]; then
+      case ":${INFOPATH}:"  in
+        *":${arg}:"*) continue ;;
+      esac
+      export INFOPATH="${arg}${INFOPATH:+:"${INFOPATH}"}"
+    else
+      export INFOPATH="${arg}"
+    fi
   done
 }
 
@@ -43,10 +47,14 @@ addinfopath() {
 addmanpath() {
   for arg; do
     test -d "${arg}" || continue
-    case ":${MANPATH}:" in
-       *":${arg}:"*) continue ;;
-    esac
-    export MANPATH="${arg}:${MANPATH:+"${MANPATH}"}"
+    if [ "${MANPATH-}" ]; then
+      case ":${MANPATH}:" in
+         *":${arg}:"*) continue ;;
+      esac
+      export MANPATH="${arg}:${MANPATH:+"${MANPATH}"}"
+    else
+      export MANPATH="${arg}"
+    fi
   done
 }
 
@@ -177,9 +185,13 @@ generate_aliases() {
 #   None
 #######################################
 generate_sudo() {
-  { ! test -f "${SHRC}/sudo/apt" && [ "${SUDO-}" ]; }  || return 0
-  mkdir -p "${SHRC}/sudo"
+  sudo_path="${SHRC}/sudo"
+  [ "${SUDO-}" ] || return 0
+  find "${sudo_path}" -type f -not -name ".*" | grep "^$" || return 0
+  mkdir -p "${sudo_path}"
 
+  prev_path="${PATH}"
+  PATH="$(echo "${PATH}" | sed "s|${sudo_path}:||")"
   for _sudo_command in \
     a2dismod a2dismode a2dissite a2enmod a2enmode a2ensite add-apt-repository addgroup adduser apache2 apache2ctl\
     apachectl apt apt-add-repository apt-cache apt-file apt-get aptitude AssetCacheManagerUtil automysqlbackup \
@@ -199,7 +211,7 @@ generate_sudo() {
     parted partprobe partx pecl phpdismod phpenmod ping pkill polo-disk postfix poweroff pre-up pvscan \
     qemu-nbd \
     reboot rkhunter rmmod rndc route \
-    scutil service smartctl software-properties-gtk softwareupdate spctl ss \
+    scutil service shutdown smartctl software-properties-gtk softwareupdate spctl ss \
     swapoff swapon sysctl systemd-analyze systemd-resolve sysupgrade \
     tasksel tcpdump tcptrack telnet tmutil traceroute trash \
     udevadm ufw umount unbound-anchor unbound-host \
@@ -215,7 +227,9 @@ generate_sudo() {
         esac
       fi
 
-      if cmd "${_sudo_command}"; then
+      alias="$(alias "${_sudo_command}" 2>/dev/null || true)"
+      [ ! "${alias-}" ] || unalias "${_sudo_command}"
+      if command -pv "${_sudo_command}" >/dev/null; then
         {
           echo "#!/bin/sh"
           echo
@@ -223,9 +237,11 @@ generate_sudo() {
         } > "${SHRC}/sudo/${_sudo_command}"
 
         /bin/chmod +x "${SHRC}/sudo/${_sudo_command}"
-      fi
-  done
 
+      fi
+    [ ! "${alias-}" ] || eval "${alias}"
+  done
+  PATH="${prev_path}"
   unset _sudo_command
 }
 

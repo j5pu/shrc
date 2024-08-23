@@ -39,8 +39,6 @@ ZSH_DISABLE_COMPFIX="true"
 
 ZSH_THEME="robbyrussell"
 
-export ZSH="${RC_D}/.oh-my-zsh"
-
-source "${ZSH}/oh-my-zsh.sh"
+! test -f "${SHRC}/.oh-my-zsh" || source "${SHRC}/.oh-my-zsh"
 
 set -y

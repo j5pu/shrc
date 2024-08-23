@@ -8,10 +8,6 @@
     </option>
   </component>
   <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../Clean/bbin-j5pu" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../Clean/rc" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../Clean/rc.d" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../media" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
 </project>
