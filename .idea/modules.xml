@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../Documents/Reembolsos/.idea/Reembolsos.iml" filepath="$PROJECT_DIR$/../Documents/Reembolsos/.idea/Reembolsos.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../Clean/bbin-j5pu/.idea/bbin.iml" filepath="$PROJECT_DIR$/../Clean/bbin-j5pu/.idea/bbin.iml" />
       <module fileurl="file://$PROJECT_DIR$/../media/.idea/media.iml" filepath="$PROJECT_DIR$/../media/.idea/media.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../Clean/rc/.idea/rc.iml" filepath="$PROJECT_DIR$/../Clean/rc/.idea/rc.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../Clean/rc.d/.idea/rc.d.iml" filepath="$PROJECT_DIR$/../Clean/rc.d/.idea/rc.d.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/shrc.iml" filepath="$PROJECT_DIR$/.idea/shrc.iml" />
     </modules>
   </component>

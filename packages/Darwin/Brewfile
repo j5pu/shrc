@@ -1,10 +1,10 @@
+tap "buo/cask-upgrade"
 tap "caarlos0/tap"
 tap "dopplerhq/cli"
 tap "goreleaser/tap"
 tap "homebrew/aliases"
 tap "homebrew/autoupdate"
 tap "homebrew/bundle"
-tap "buo/cask-upgrade"
 tap "homebrew/command-not-found"
 tap "homebrew/services"
 tap "homebrew/test-bot"
@@ -16,236 +16,427 @@ tap "microsoft/git"
 tap "mongodb/brew"
 tap "noborus/tap"
 tap "qqilihq/partial-emlx-converter"
+# Search tool like grep, but optimized for programmers
 brew "ack"
+# Run your GitHub Actions locally
 brew "act"
+# Library for decimal floating point arithmetic
 brew "mpdecimal"
+# Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
+# Library for command-line editing
 brew "readline"
+# General-purpose data compression with high compression ratio
 brew "xz"
+# Interpreted, interactive, object-oriented programming language
 brew "python@3.12"
+# Toolkit for image loading and pixel buffer manipulation
 brew "gdk-pixbuf"
+# OpenType text shaping engine
 brew "harfbuzz"
+# Framework for layout and rendering of i18n text
 brew "pango"
+# Library to render SVG files using Cairo
 brew "librsvg"
+# Icons for the GNOME project
 brew "adwaita-icon-theme"
+# Image format providing lossless and lossy compression for web images
 brew "webp"
+# New file format for still image compression
 brew "jpeg-xl"
+# Codec library for encoding and decoding AV1 video streams
 brew "aom"
+# Text processor and publishing toolchain for AsciiDoc
 brew "asciidoctor"
+# GNU File, Shell, and Text utilities
 brew "coreutils"
+# Extendable version manager with support for Ruby, Node.js, Erlang & more
 brew "asdf"
-brew "asimov", restart_service: true
+# MPEG-4 command-line tool
 brew "atomicparsley"
+# Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
+# Programmable completion for Bash 4.2+
 brew "bash-completion@2"
+# Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Python code formatter
 brew "black", restart_service: true
+# Collection of portable C++ source libraries
 brew "boost"
+# Fish completion for brew-cask
 brew "brew-cask-completion"
+# Install RubyGems as Homebrew formulae
 brew "brew-gem"
+# Bash completion for Bundler
 brew "bundler-completion"
+# CD/DVD/Blu-ray premastering and recording software
 brew "cdrtools"
+# Create and view interactive cheat sheets for *nix commands
 brew "cheat"
+# Get a file from an HTTP, HTTPS or FTP server
 brew "curl"
+# POSIX-compliant descendant of NetBSD's ash (the Almquist SHell)
 brew "dash"
+# GNU data recovery tool
 brew "ddrescue"
+# Secure runtime for JavaScript and TypeScript
 brew "deno"
+# Ncurses based advanced hex editor featuring diff mode and more
 brew "dhex"
+# GNU Pretty Good Privacy (PGP) package
 brew "gnupg"
+# Library for JPEG-2000 image manipulation
 brew "openjpeg"
+# PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
+# Visually compare two PDF files
 brew "diff-pdf"
+# Load/unload environment variables based on $PWD
 brew "direnv"
-brew "pyyaml"
+# Tool that bootstraps your dotfiles
 brew "dotbot"
+# Command-line interface for Cyberduck (a multi-protocol file transfer tool)
 brew "duck"
+# Disk Usage/Free Utility - a better 'df' alternative
 brew "duf"
+# More intuitive version of du in rust
 brew "dust"
+# Rip DVD's from the command-line
 brew "dvdbackup"
+# Collection of reusable C++ library artifacts developed at Facebook
 brew "folly"
+# C++14 implementation of the TLS-1.3 standard
 brew "fizz"
+# Modular, composable client/server abstractions framework
 brew "wangle"
+# Facebook's branch of Apache Thrift, including a new C++ server
 brew "fbthrift"
+# Thrift functions for querying information from a service
 brew "fb303"
+# Shared library for Watchman and Eden projects
 brew "edencommon"
+# Perl lib for reading and writing EXIF metadata
 brew "exiftool"
+# Library and command-line tool for SSH
 brew "fabric"
+# Bash completion for Fabric
 brew "fabric-completion"
+# Efficient Duplicate File Finder
 brew "fclones"
+# Simple, fast and user-friendly alternative to find
 brew "fd"
+# Image processing and image analysis library
 brew "leptonica"
+# Subtitle renderer for the ASS/SSA subtitle format
 brew "libass"
+# OCR (Optical Character Recognition) engine
 brew "tesseract"
+# Play, record, convert, and stream audio and video
 brew "ffmpeg"
+# GNU compiler collection
 brew "gcc"
+# High performance message passing library
 brew "open-mpi"
+# Collection of GNU find, xargs, and locate
 brew "findutils"
-brew "frpc", restart_service: true
+# Monitor a directory for changes and run a shell command
 brew "fswatch"
+# Command-line fuzzy finder written in Go
 brew "fzf"
+# GNU database manager
 brew "gdbm"
+# Bash completion for gem
 brew "gem-completion"
+# GitHub command-line tool
 brew "gh"
+# Interpreter for PostScript and PDF
 brew "ghostscript"
+# Distributed revision control system
 brew "git"
-brew "python@3.11"
+# Quickly rewrite git repository history
 brew "git-filter-repo"
+# Git extension for versioning large files
 brew "git-lfs"
+# Open GitHub webpages from a terminal
 brew "git-open"
+# GNU implementation of the famous stream editor
 brew "gnu-sed"
+# Open source programming language to build simple/reliable/efficient software
 brew "go"
+# Bash tool for navigation to aliased directories with auto-completion
 brew "goto"
+# Open-source build automation tool based on the Groovy and Kotlin DSL
 brew "gradle"
+# Bash and Zsh completion for Gradle
 brew "gradle-completion"
+# Colorize logfiles and command output
 brew "grc"
+# GNU grep, egrep and fgrep
 brew "grep"
+# Image manipulation
 brew "netpbm"
+# Utilities for manipulating PostScript documents
 brew "psutils"
+# Toolkit for creating graphical user interfaces
 brew "gtk4"
+# File format designed to store large amounts of data
 brew "hdf5"
+# GUI for playing Hex over Hex Text Protocol
 brew "hexgui"
+# Idempotent command-line utility for managing your /etc/hosts file
 brew "hostess"
+# Improved top (interactive process viewer)
 brew "htop"
+# User-friendly cURL replacement (command-line HTTP client)
 brew "httpie"
+# Command-line benchmarking tool
 brew "hyperfine"
+# ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
 brew "libheif"
+# Library for reading RAW files from digital photo cameras
 brew "libraw"
+# Tools and libraries to manipulate images in many formats
 brew "imagemagick"
+# Library for complex text layout
 brew "libraqm"
+# Friendly PIL fork (Python Imaging Library)
 brew "pillow"
+# Tools for and transforming and inspecting PDF files
 brew "qpdf"
+# Install and debug iPhone apps from the command-line
 brew "ios-deploy"
+# JBIG2 encoder (for monochrome documents)
 brew "jbig2enc"
+# Duplicate file finder and an enhanced fork of 'fdupes'
 brew "jdupes"
+# JSON output from a shell
 brew "jo"
+# C library for reading and writing MATLAB MAT files
 brew "libmatio"
+# Platform built on V8 to build network applications
 brew "node"
+# C library to read whole-slide images (a.k.a. virtual slides)
 brew "openslide"
+# Send macOS User Notifications from the command-line
 brew "terminal-notifier"
+# Image processing library
 brew "vips"
+# Note taking and to-do application with synchronization capabilities
 brew "joplin-cli"
+# Lightweight and flexible command-line JSON processor
 brew "jq"
+# Handy way to save and run project-specific commands
 brew "just"
+# Selection-based modal text editor
 brew "kakoune"
+# Network authentication protocol
 brew "krb5"
+# Bash completion for Launchctl
 brew "launchctl-completion"
-brew "lf"
+# Clone of ls with colorful output, file type icons, and more
 brew "lsd"
+# Swiss Army Knife for macOS
 brew "m-cli"
-brew "macos-trash"
-brew "make"
-brew "makeself"
-brew "man-db"
-brew "mas"
-brew "mat2"
-brew "mongosh"
-brew "s-lang"
-brew "most"
-brew "mupdf"
-brew "ncdu"
-brew "nexttrace"
-brew "nmap"
-brew "nodebrew"
-brew "nvm"
-brew "pngquant"
-brew "ocrmypdf"
-brew "openai-whisper"
-brew "opensc", link: false
-brew "openssh"
-brew "parallel"
-brew "pdfgrep"
-brew "pdm"
+# Keep your Mac's application settings in sync
 brew "mackup"
+# Move files and folders to the trash
+brew "macos-trash"
+# Utility for directing compilation
+brew "make"
+# Unix documentation system
+brew "man-db"
+# Mac App Store command-line interface
+brew "mas"
+# Metadata anonymization toolkit
+brew "mat2"
+# MongoDB Shell to connect, configure, query, and work with your MongoDB database
+brew "mongosh"
+# Atlas CLI enables you to manage your MongoDB Atlas
+brew "mongodb-atlas-cli"
+# Library for creating multi-platform software
+brew "s-lang"
+# Powerful paging program
+brew "most"
+# Lightweight PDF and XPS viewer
+brew "mupdf"
+# NCurses Disk Usage
+brew "ncdu"
+# Open source visual route tracking CLI tool
+brew "nexttrace"
+# Port scanning utility for large networks
+brew "nmap"
+# Node.js version manager
+brew "nodebrew"
+# Manage multiple Node.js versions
+brew "nvm"
+# PNG image optimizing utility
+brew "pngquant"
+# Adds an OCR text layer to scanned PDF files
+brew "ocrmypdf"
+# General-purpose speech recognition model
+brew "openai-whisper"
+# OpenBSD freely-licensed SSH connectivity tools
+brew "openssh"
+# Shell command parallelization utility
+brew "parallel"
+# Search PDFs for strings matching a regular expression
+brew "pdfgrep"
+# Modern Python package and dependency manager supporting the latest PEP standards
+brew "pdm"
+# Display the PID number for a given process name
 brew "pidof"
+# Bash completion for Pip
 brew "pip-completion"
+# Execute binaries from Python packages in isolated environments
 brew "pipx"
+# Fast, disk space efficient package manager
 brew "pnpm"
+# Library to work with the PDF file format
 brew "podofo"
-brew "poetry"
+# Cross-platform application and UI framework
 brew "qt@5"
+# PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler-qt5"
-brew "postgresql@14", restart_service: true
-brew "postgresql@15", restart_service: true
+# Modern replacement for ps written by Rust
 brew "procs"
+# Monitor data's progress through a pipe
 brew "pv"
+# Python version management
 brew "pyenv"
+# Pythonic task management & command execution
 brew "pyinvoke"
+# Tab completion for Python argparse
 brew "python-argcomplete"
+# Interpreted, interactive, object-oriented programming language
 brew "python@3.10"
+# Python interface to Tcl/Tk
 brew "python-tk@3.10"
+# Interpreted, interactive, object-oriented programming language
 brew "python@3.9"
+# Python interface to Tcl/Tk
 brew "python-tk@3.9"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.11"
+# YAML framework for Python
+brew "pyyaml"
+# Ruby version manager
 brew "rbenv"
+# Rsync for cloud storage
 brew "rclone"
+# Tool to recover JPEG images from a file system image
 brew "recoverjpeg"
-brew "redis", restart_service: true
+# Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Extremely fast tool to remove dupes and other lint from your filesystem
 brew "rmlint"
+# Utility that provides fast incremental file transfer
 brew "rsync"
+# Bash completion for Ruby
 brew "ruby-completion"
+# Language Server Protocol implementation for Ruff
 brew "ruff-lsp"
+# Safe, concurrent, practical language
 brew "rust"
+# Bash completion for rustc
 brew "rustc-completion"
+# Rust toolchain installer
 brew "rustup"
-brew "sevenzip"
-brew "shellz"
-brew "speedtest-cli"
-brew "starship"
-brew "stow"
+# Experimental Package Management Solution for Python
 brew "rye"
+# 7-Zip is a file archiver with a high compression ratio
+brew "sevenzip"
+# Command-line interface for https://speedtest.net bandwidth tests
+brew "speedtest-cli"
+# Cross-shell prompt for astronauts
+brew "starship"
+# Version control system designed to be a better CVS
 brew "subversion"
+# SVG to PNG converter
 brew "svg2png"
+# Manipulate and query tags on macOS files
 brew "tag"
+# User interface to the TELNET protocol
 brew "telnet"
-brew "tere"
+# Enables extra languages support for Tesseract
 brew "tesseract-lang"
+# Programmatically correct mistyped console commands
 brew "thefuck"
+# Terminal multiplexer
 brew "tmux"
-brew "tor", restart_service: true
-brew "transmission-cli", restart_service: true
+# Display directories as trees (with optional color/HTML output)
 brew "tree"
+# Command-line tool for URL parsing and manipulation
 brew "trurl"
+# Open-source industry-supported PDF/A validation
 brew "verapdf"
+# Vi 'workalike' with many additional features
 brew "vim"
+# Tool for creating isolated virtual python environments
 brew "virtualenv"
+# Manage the desktop wallpaper
 brew "wallpaper"
+# Watch files and take action when they change
 brew "watchman"
+# Internet file retriever
 brew "wget"
-brew "whalebrew"
+# Friendly and fast tool for sending HTTP requests
 brew "xh"
+# JavaScript package manager
 brew "yarn"
+# Bash completion for Yarn
 brew "yarn-completion"
+# Feature-rich command-line audio/video downloader
 brew "yt-dlp"
+# Shell extension to navigate your filesystem faster
 brew "zoxide"
+# Additional completion definitions for zsh
 brew "zsh-completions"
+# File transfer program
 brew "zsync"
+# Semantic Version Utility
 brew "caarlos0/tap/svu"
+# The official Doppler CLI for managing your secrets
 brew "dopplerhq/cli/doppler"
+# nFPM is a simple, 0-dependencies, deb, rpm and apk packager.
 brew "goreleaser/tap/nfpm"
+# Simple command-line snippet manager
 brew "knqyf263/pet/pet"
+# High-performance, schema-free, document-oriented database
 brew "mongodb/brew/mongodb-community"
+# An interactive JavaScript command-line interface to MongoDB
 brew "mongodb/brew/mongodb-community-shell"
+# Feature rich terminal pager
 brew "noborus/tap/ov"
+# Convert .emlx and .partial.emlx files created by Apple’s Mail.app to .eml
 brew "qqilihq/partial-emlx-converter/partial-emlx-converter"
+# View, print, and comment on PDF documents
 cask "adobe-acrobat-reader"
-cask "alfred"
+# Inspect application bundles
 cask "apparency"
+# Application uninstaller
 cask "appcleaner"
+# Control web-based media players with media keys
 cask "beardedspice"
-cask "corelocationcli"
+# Server and cloud storage browser
 cask "cyberduck"
-cask "dhs"
+# Drivers for DisplayLink docks, adapters and monitors
+cask "displaylink"
+# App to build and share containerised applications and microservices
 cask "docker"
+# Finds duplicate files in a computer system
 cask "dupeguru"
-cask "duplicacy-cli"
+# Build desktop apps with JavaScript, HTML, and CSS
 cask "electron"
-cask "electrum"
+# Metadata cleaner
 cask "exifcleaner"
+# Tool to rename digital photos, movie- and audio-clips
 cask "exifrenamer"
+# Network scanner
 cask "fing"
+# Web browser
 cask "firefox"
 cask "fiscript"
-cask "fsnotes"
 cask "font-agave-nerd-font"
 cask "font-archivo-black"
 cask "font-inconsolata-go-nerd-font"
@@ -265,106 +456,115 @@ cask "font-share-tech-mono"
 cask "font-symbols-only-nerd-font"
 cask "font-ubuntu-mono-nerd-font"
 cask "font-ubuntu-nerd-font"
+# Download accelerator and organiser
 cask "free-download-manager"
+# Notes manager
+cask "fsnotes"
+# Free and open-source image editor
 cask "gimp"
-cask "displaylink"
+# Desktop client for GitHub repositories
 cask "github"
+# Web browser
 cask "google-chrome"
+# Client for the Google Drive storage service
 cask "google-drive"
-cask "hammerspoon"
+# Open-source video transcoder
 cask "handbrake"
+# Windows manager and desktop organiser
 cask "hazeover"
+# Hex editor focussing on speed
 cask "hex-fiend"
+# Dedicated scratchpad for developers
 cask "heynote"
+# Medical image viewer
 cask "horos"
+# Local hosts update tool
 cask "hostsx"
+# Vector graphics editor
 cask "inkscape"
+# Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
+# JetBrains tools manager
 cask "jetbrains-toolbox"
+# Note taking and to-do application with synchronisation capabilities
 cask "joplin"
-cask "karabiner-elements"
+# Tool to prevent the system from going into sleep mode
 cask "keepingyouawake"
+# Password manager compatible with KeePass
 cask "keeweb"
+# File archiver
 cask "keka"
-cask "warp"
+# Free cross-platform office suite, fresh version
 cask "libreoffice"
+# Customise mouse behavior
 cask "linearmouse"
+# Application to spoof your iOS, iPadOS or iPhoneSimulator device location
 cask "locationsimulator"
-cask "macstroke"
+# Menu bar app for convenient access to the system colour panel
 cask "menubar-colors"
+# Provides updates to various Microsoft products
+cask "microsoft-auto-update"
+# Meet, chat, call, and collaborate in just one place
 cask "microsoft-teams"
+# Interactive tool for analyzing MongoDB data
 cask "mongodb-compass"
+# Desktop application
 cask "nofwl"
-cask "opendnsupdater"
+# Finder Toolbar app to open the current directory in Terminal or Editor
 cask "openinterminal"
-cask "opensc"
+# Image editor
 cask "paintbrush"
+# Administration and development platform for PostgreSQL
 cask "pgadmin4"
-cask "postman"
-cask "proxyman"
+# Quick Look generator for Markdown files
 cask "qlmarkdown"
+# Thumbnails, static previews, cover art and metadata for video files
 cask "qlvideo"
-cask "rar"
-cask "git-credential-manager"
-cask "rectangle"
-cask "reminders-menubar"
-cask "scribus"
+# Video chat, voice call and instant messaging application
 cask "skype"
+# Music streaming service
 cask "spotify"
+# Quicklook extension for source files
 cask "syntax-highlight"
+# Offline, open-source, document manager with tagging support
 cask "tagspaces"
-cask "termius"
+# Get and save colour codes
 cask "toinane-colorpicker"
+# Web browser focusing on security
 cask "tor-browser"
+# Open-source BitTorrent client
 cask "transmission"
-cask "uncolored"
-cask "utm"
-cask "vincelwt-chatgpt", args: { appdir: "~/Applications" }
+# Multimedia player
 cask "vlc"
+# Rust-based terminal
+cask "warp"
+# Open-source version of the X.Org X Window System
 cask "xquartz"
 mas "Amphetamine", id: 937984704
 mas "Apple Configurator", id: 1037126344
-mas "Bear", id: 1091189122
-mas "Boop", id: 1518425043
-mas "com.tyrhex.Tyrhex", id: 933525733
-mas "Essentials", id: 1588151344
 mas "Flycut", id: 442160987
 mas "HP Easy Scan", id: 967004861
 mas "HP Smart", id: 1474276998
 mas "Image2icon", id: 992115977
-mas "JSONPeep", id: 1458969831
 mas "Keynote", id: 409183694
-mas "Keyword Search", id: 1558453954
 mas "LimeChat", id: 414030210
-mas "MacWeb Servers", id: 1469079631
 mas "Magnet", id: 441258766
-mas "Marklog", id: 1640691513
-mas "Microsoft Remote Desktop", id: 1295203466
-mas "Numbers", id: 409203825
-mas "Omnivore", id: 1564031042
-mas "Pages", id: 409201541
-mas "PhotoMiner", id: 1227312629
-mas "Prime Video", id: 545519333
-mas "Quiche Reader", id: 1387881185
-mas "RAR Extractor and Expander", id: 1071663619
-mas "Slack", id: 803453959
-mas "Sleep Alarm Clock", id: 1091149644
-mas "Smart Converter", id: 447513724
-mas "Speedtest", id: 1153157709
-mas "Tailscale", id: 1475387142
-mas "Telegram", id: 747648890
-mas "Transporter", id: 1450874784
-mas "Userscripts-Mac-App", id: 1463298887
-mas "WeTransfer", id: 1114922065
-mas "WhatFont", id: 1437138382
-mas "WhatsApp", id: 1147396723
-mas "Xcode", id: 497799835
-mas "GarageBand", id: 682658836
-mas "iMovie", id: 408981434
-mas "Keynote", id: 409183694
 mas "Microsoft Excel", id: 462058435
 mas "Microsoft PowerPoint", id: 462062816
+mas "Microsoft Remote Desktop", id: 1295203466
 mas "Microsoft Word", id: 462054704
 mas "Numbers", id: 409203825
 mas "OneDrive", id: 823766827
 mas "Pages", id: 409201541
+mas "PhotoMiner", id: 1227312629
+mas "Slack", id: 803453959
+mas "Sleep Alarm Clock", id: 1091149644
+mas "Smart Converter", id: 447513724
+mas "Speedtest", id: 1153157709
+mas "SwiftyMenu", id: 1567748223
+mas "Tailscale", id: 1475387142
+mas "Telegram", id: 747648890
+mas "Transporter", id: 1450874784
+mas "WhatFont", id: 1437138382
+mas "Xcode", id: 497799835
+mas "‎WhatsApp", id: 310633997

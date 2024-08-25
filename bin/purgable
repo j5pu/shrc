@@ -1,0 +1,4 @@
+#!/bin/sh
+
+sudo dd if=/dev/zero of=/private/tmp/purgar bs=15m
+sudo rm -rf /private/tmp/purgar

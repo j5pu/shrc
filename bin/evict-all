@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+#
 #find -H -L "$(realpath ~/Library/Mobile\ Documents)" -mindepth 1 -type f \
 #  -not -name ".DS_Store" \
 #  -and -not -name "*.icloud" \
@@ -21,17 +21,51 @@
 #  -and -not -path "*/*.sites2/*" \
 #  -and -not -path "*/*.workflow/*" \
 #  -and -not -path "*/*.xcodeproj/*" \
+#  -and -not -path "*/com~apple~mail/*" \
 #  -and -not -path "*/com~apple~shoebox/*" \
 #  -exec brctl evict "{}" \; 2>&1 | grep -v "evicted content of "
 find -H -L "$(realpath ~/Library/Mobile\ Documents)" -mindepth 1 -type d \
   -not -name "com~apple~shoebox" \
   -and -not -path "*.key/Contents" \
+  -and -not -path "*.clipsproject/Clips" \
+  -and -not -path "*.clipsproject/Assets" \
+  -and -not -path "*.epub/META-INF" \
+  -and -not -path "*.epub/text" \
+  -and -not -path "*.epub/images" \
+  -and -not -path "*.key/Contents" \
   -and -not -path "*.key/Data" \
   -and -not -path "*.key/Metadata" \
   -and -not -path "*.key/QuickLook" \
   -and -not -path "*.key/thumbs" \
+  -and -not -path "*.key/theme-files" \
   -and -not -path "*.key-tef/index.key" \
   -and -not -path "*.key-tef/Previews" \
+  -and -not -path "*.numbers/Contents" \
+  -and -not -path "*.numbers/Data" \
+  -and -not -path "*.numbers/Metadata" \
+  -and -not -path "*.numbers/QuickLook" \
+  -and -not -path "*.numbers/thumbs" \
+  -and -not -path "*.numbers-tef/Contents" \
+  -and -not -path "*.numbers-tef/Data" \
+  -and -not -path "*.numbers-tef/Metadata" \
+  -and -not -path "*.numbers-tef/QuickLook" \
+  -and -not -path "*.numbers-tef/thumbs" \
+  -and -not -path "*.numbers-tef/index.numbers" \
+  -and -not -path "*.numbers-tef/Previews" \
+  -and -not -path "*.pages/Contents" \
+  -and -not -path "*.pages/Data" \
+  -and -not -path "*.pages/Metadata" \
+  -and -not -path "*.pages/QuickLook" \
+  -and -not -path "*.pages/thumbs" \
+  -and -not -path "*.pages-tef/Contents" \
+  -and -not -path "*.pages-tef/Data" \
+  -and -not -path "*.pages-tef/Metadata" \
+  -and -not -path "*.pages-tef/QuickLook" \
+  -and -not -path "*.pages-tef/thumbs" \
+  -and -not -path "*.pages-tef/index.pages" \
+  -and -not -path "*.pages-tef/Previews" \
+  -and -not -path "*/domain-*" \
+  -and -not -path "*/com~apple~CloudDocs/Desktop" \
   -and -not -path "*/com~apple~shoebox*" \
   -exec brctl evict "{}" \; 2>&1 | grep -v "evicted content of "
 

@@ -4,8 +4,22 @@
 ! test -f "${HOMEBREW_PREFIX}/etc/grc.sh" || GRC_ALIASES=true . "${HOMEBREW_PREFIX}/etc/grc.sh"
 
 alias atlasip='atlas accessLists create $(mydigip)/32'
-alias bb=" brew update && brew upgrade && brew cu -f && brew cleanup && brew autoremove && brew bundle dump --force && \
-  brew bundle install --no-lock --cleanup && brew cleanup --prune=all"
+alias bbb=" brew update && \
+  brew upgrade && \
+  brew cu -f --yes --cleanup --include-mas && \
+  brew cleanup && \
+  brew autoremove && \
+  brew bundle dump --force --describe && \
+  brew bundle install --no-lock --cleanup && \
+  brew cleanup --prune=all"
+alias bbc=" brew update && \
+  brew upgrade && \
+  brew cu -f --yes --cleanup --include-mas && \
+  brew cleanup && \
+  brew autoremove && \
+  brew bundle install --no-lock --cleanup && \
+  brew bundle dump --force --describe && \
+  brew cleanup --prune=all"
 if cmd docker; then
   alias ddisk="docker system df"
   alias devents="docker system events"
@@ -73,7 +87,6 @@ fi
 if cmd vim; then alias vi=vim; else alias vim=vi; fi
 
 if $MACOS; then
-
   alias assetcache="AssetCacheManagerUtil flushCache; AssetCacheManagerUtil flushPersonalCache; \
     AssetCacheManagerUtil flushSharedCache"
   alias backups="tmutil listbackups"
@@ -92,5 +105,4 @@ else
   alias apt-all="apt update -y; apt upgrade -y; apt dist-upgrade -y; apt autoremove -y; apt autoclean -y"
   alias networking="sudo /etc/init.d/networking"
   alias update="softwareupdate -aiR" # Install all macOS updates and restart system
-  alias updatedb='updatedb'
 fi

@@ -7,25 +7,27 @@ PATH="${SHRC}/bin:${PATH}"
 export SHRC_PREFIX="${SHRC%/*}"
 . "${SHRC}/profile"
 
-
 brew_install() {
-  if ! test -f /usr/local/bin/brew && ! test -f /opt/homebrew/bin/brew && ! test -f /home/linuxbrew/.linuxbrew && \
-    [ "$(id -u)" -ne 0 ] && command -v bash >/dev/null; then
-      CI=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      . "${SHRC}/profile"
-      brew bundle install --no-lock --cleanup
+  if ! test -f /usr/local/bin/brew && ! test -f /opt/homebrew/bin/brew && ! test -f /home/linuxbrew/.linuxbrew \
+    && [ "$(id -u)" -ne 0 ] && command -v bash >/dev/null; then
+    CI=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
 }
 
 icloud() {
   [ "${LIBRARY-}" ] || return 0
+  [ "$(id -u)" -ne 0 ] || return 0
   ! test -e "${MOBILE}" || test -L "${DEFAULT_HOME}/Mobile" || ln -s "${MOBILE}" "${DEFAULT_HOME}/Mobile"
   ! test -e "${ICLOUD}" || test -L "${DEFAULT_HOME}/iCloud" || ln -s "${ICLOUD}" "${DEFAULT_HOME}/iCloud"
+  sudo spctl --master-disable
+  open /Applications/iTerm.app
+  defaults write "${DEFAULT_HOME}/Library/Preferences/com.googlecode.iterm2.plist" PrefsCustomFolder \
+    "${SHRC_CONFIG}/iTerm/com.googlecode.iterm2.plist"
+  killall iTerm2
 }
 
 profile() {
-  # TODO: tmp
-  "${SUDO}" tee /etc/profile > /dev/null <<EOF
+  "${SUDO}" tee /etc/profile >/dev/null <<EOF
 # System-wide .profile for sh(1)
 # Updated by "$0" on: $(date)
 export SHRC_PREFIX="${SHRC_PREFIX}"
@@ -46,16 +48,19 @@ EOF
 main() {
   sudoers
   brew_install
+  . "${SHRC}/profile"
+  brew bundle install --no-lock --cleanup
   profile
   icloud
   generate_aliases
   generate_sudo
+  if ! test -d "${DEFAULT_HOME}/secrets"; then
+    git -C "${DEFAULT_HOME}" clone "https://github.com/${GIT}/secrets"
+    (cd "${DEFAULT_HOME}/secrets"; shrc)
+  fi
 }
 
-# TODO: brew install
-# TODO: Git sync shrc
-#   secrets .ssh
-#   los que instala brew que los instale si no están en macOS
-#   arreglar los casks y meter con mas
-#   purge
+#   TODO: .ssh
+#     acabar con el evict-all
+#     cask "git-credential-manager"
 main "$@"
