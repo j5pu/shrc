@@ -173,7 +173,8 @@ generate_aliases() {
 
   {    # shellcheck disable=SC2086
     q="'" find -L ${_aliases_directories} -type d -mindepth 1 -maxdepth 1 -not \( -name ".git" -o -name ".idea" \) \
-      -exec sh -c 'v="$(echo "${1##*/}" | sed "s/ //g;s/(//g;s/)//g")"; echo alias .${v}=${q}cd \"$1\"$q' sh {} \;
+      -exec sh -c 'v="$(echo "${1##*/}" | sed "s/ //g;s/\&//g;s/(//g;
+      s/)//g" | tr "[:upper:]" "[:lower:]" )"; echo alias .${v}=${q}cd \"$1\"$q' sh {} \;
 
     if $MACOS; then
       for _aliases_directory in "Application Support" LaunchAgents Preferences; do

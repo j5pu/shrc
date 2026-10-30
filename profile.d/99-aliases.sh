@@ -5,12 +5,14 @@
 
 alias atlasip='atlas accessLists create $(mydigip)/32'
 alias bb='bbup && \
-  brew bundle dump --force --describe && \
-  brew bundle install --cleanup && \
+  brew bundle dump --force && \
+  brew bundle install && \
+  brew bundle cleanup && \
   brew cleanup --prune=all'
 alias bbc="bbup && \
-  brew bundle install --cleanup && \
-  brew bundle dump --force --describe && \
+  brew bundle install && \
+  brew bundle cleanup && \
+  brew bundle dump --force && \
   brew cleanup --prune=all"
 alias bbup="brew update && \
   brew upgrade --force --greedy-auto-updates && \

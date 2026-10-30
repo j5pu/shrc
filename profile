@@ -2,7 +2,6 @@
 
 # System-wide .profile for sh(1)
 #
-
 # Profile has been sourced to avoid sourcing again in user interactive shell
 #
 : "${SHRC_PROFILE_SOURCED=0}"

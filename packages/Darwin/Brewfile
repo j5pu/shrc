@@ -1,5 +1,5 @@
+tap "antoniorodr/memo", trusted: true
 tap "buo/cask-upgrade", trusted: true
-tap "caarlos0/tap", trusted: true
 tap "domt4/autoupdate", "https://github.com/DomT4/homebrew-autoupdate.git", trusted: true
 tap "dopplerhq/doppler", "https://github.com/DopplerHQ/homebrew-doppler.git", trusted: true
 tap "goreleaser/tap", trusted: true
@@ -8,26 +8,32 @@ tap "homebrew/bundle"
 tap "homebrew/command-not-found"
 tap "homebrew/services"
 tap "homebrew/test-bot"
+tap "jundot/omlx", "https://github.com/jundot/omlx", trusted: true
 tap "knqyf263/pet", trusted: true
 tap "lencx/chatgpt", "https://github.com/lencx/ChatGPT.git", trusted: true
 tap "lencx/nofwl", trusted: true
+tap "lightpanda-io/browser", trusted: true
 tap "mas-cli/tap", trusted: true
 tap "microsoft/git", trusted: true
 tap "mongodb/brew", trusted: true
 tap "noborus/tap", trusted: true
+tap "oven-sh/bun", trusted: true
 tap "qqilihq/partial-emlx-converter", trusted: true
+tap "steipete/tap", trusted: true
 # Search tool like grep, but optimized for programmers
 brew "ack"
 # Run your GitHub Actions locally
 brew "act"
 # General-purpose data compression with high compression ratio
 brew "xz"
+# Image format providing lossless and lossy compression for web images
+brew "webp"
 # Toolkit for image loading and pixel buffer manipulation
 brew "gdk-pixbuf"
-# C/C++ and Java libraries for Unicode and globalization
-brew "icu4c@78"
 # OpenType text shaping engine
 brew "harfbuzz"
+# C/C++ and Java libraries for Unicode and globalization
+brew "icu4c@78"
 # Framework for layout and rendering of i18n text
 brew "pango"
 # Library to render SVG files using Cairo
@@ -44,16 +50,16 @@ brew "asciidoctor"
 brew "asdf"
 # MPEG-4 command-line tool
 brew "atomicparsley"
-# Library for command-line editing
-brew "readline"
+# Library for decimal floating point arithmetic
+brew "mpdecimal"
+# Official Amazon AWS command-line interface
+brew "awscli"
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
 # Programmable completion for Bash 4.2+
 brew "bash-completion@2"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
-# Library for decimal floating point arithmetic
-brew "mpdecimal"
 # Python code formatter
 brew "black", restart_service: :changed
 # Collection of portable C++ source libraries
@@ -78,8 +84,6 @@ brew "ffmpeg"
 brew "python@3.12"
 # Toolkit for creating graphical user interfaces
 brew "gtk4"
-# Image format providing lossless and lossy compression for web images
-brew "webp"
 # ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
 brew "libheif"
 # Duplicate file utility
@@ -198,6 +202,8 @@ brew "httpie"
 brew "hyperfine"
 # Tools and libraries to manipulate images in select formats
 brew "imagemagick"
+# Command-line tool to export and inspect local iMessage database
+brew "imessage-exporter"
 # Library for complex text layout
 brew "libraqm"
 # Friendly PIL fork (Python Imaging Library)
@@ -272,8 +278,6 @@ brew "ncdu"
 brew "nexttrace"
 # Port scanning utility for large networks
 brew "nmap"
-# Open-source, cross-platform JavaScript runtime environment
-brew "node@22"
 # Node.js version manager
 brew "nodebrew"
 # Manage multiple Node.js versions
@@ -283,11 +287,15 @@ brew "pngquant"
 # Adds an OCR text layer to scanned PDF files
 brew "ocrmypdf"
 # Create, run, and share large language models (LLMs)
-brew "ollama", restart_service: :changed
+brew "ollama"
 # High performance message passing library
 brew "open-mpi"
 # General-purpose speech recognition model
 brew "openai-whisper"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# AI coding agent, built for the terminal
+brew "opencode"
 # OpenBSD freely-licensed SSH connectivity tools
 brew "openssh"
 # Shell command parallelization utility
@@ -321,10 +329,6 @@ brew "pyinvoke"
 # Tab completion for Python argparse
 brew "python-argcomplete"
 # Interpreted, interactive, object-oriented programming language
-brew "python@3.10"
-# Python interface to Tcl/Tk
-brew "python-tk@3.10"
-# Interpreted, interactive, object-oriented programming language
 brew "python@3.9"
 # Python interface to Tcl/Tk
 brew "python-tk@3.9"
@@ -338,8 +342,6 @@ brew "rbenv"
 brew "rclone"
 # Tool to recover JPEG images from a file system image
 brew "recoverjpeg"
-# Search tool like grep and The Silver Searcher
-brew "ripgrep"
 # Extremely fast tool to remove dupes and other lint from your filesystem
 brew "rmlint"
 # Utility that provides fast incremental file transfer
@@ -414,6 +416,8 @@ brew "zsync"
 brew "goreleaser/tap/nfpm"
 # Simple command-line snippet manager
 brew "knqyf263/pet/pet"
+# Headless browser for AI agents and automation
+brew "lightpanda-io/browser/lightpanda", trusted: true
 # High-performance, schema-free, document-oriented database
 brew "mongodb/brew/mongodb-community"
 # An interactive JavaScript command-line interface to MongoDB
@@ -422,6 +426,8 @@ brew "mongodb/brew/mongodb-community-shell"
 brew "noborus/tap/ov"
 # Convert .emlx and .partial.emlx files created by Apple’s Mail.app to .eml
 brew "qqilihq/partial-emlx-converter/partial-emlx-converter"
+# Send and read iMessage / SMS from the terminal
+brew "steipete/tap/imsg", trusted: true
 # View, print, and comment on PDF documents
 cask "adobe-acrobat-reader"
 # Inspect application bundles
@@ -444,8 +450,6 @@ cask "cyberduck"
 cask "displaylink"
 # App to build and share containerised applications and microservices
 cask "docker-desktop"
-# Finds duplicate files in a computer system
-cask "dupeguru"
 # Tool to rename digital photos, movie- and audio-clips
 cask "exifrenamer"
 # Web browser
@@ -485,14 +489,14 @@ cask "google-gemini"
 cask "handbrake-app"
 # Windows manager and desktop organiser
 cask "hazeover"
+# Open-source desktop AI agent
+cask "hermes-desktop"
 # Hex editor focussing on speed
 cask "hex-fiend"
 # Dedicated scratchpad for developers
 cask "heynote"
 # Medical image viewer
 cask "horos"
-# Local hosts update tool
-cask "hostsx"
 # Vector graphics editor
 cask "inkscape"
 # Terminal emulator as alternative to Apple's Terminal app
@@ -511,8 +515,6 @@ cask "keka"
 cask "libreoffice"
 # Customise mouse behavior
 cask "linearmouse"
-# Discover, download, and run local LLMs
-cask "lm-studio"
 # Application to spoof your iOS, iPadOS or iPhoneSimulator device location
 cask "locationsimulator"
 # Free up RAM manually and automatically
@@ -523,10 +525,16 @@ cask "microsoft-auto-update"
 cask "microsoft-teams"
 # Interactive tool for analyzing MongoDB data
 cask "mongodb-compass"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
+# Personal AI assistant with local memory and integrations
+cask "openhuman"
 # Finder Toolbar app to open the current directory in Terminal or Editor
 cask "openinterminal"
 # Desktop application for OpenList
 cask "openlist-app"
+# Unofficial desktop GUI for OpenCode
+cask "openwork"
 # Image editor
 cask "paintbrush"
 # Administration and development platform for PostgreSQL
@@ -535,12 +543,8 @@ cask "pgadmin4"
 cask "quicklook-video"
 # Music streaming service
 cask "spotify"
-# Semantic Version Utility
-cask "caarlos0/tap/svu"
 # Quicklook extension for source files
 cask "syntax-highlight"
-# Get and save colour codes
-cask "toinane-colorpicker"
 # Web browser focusing on security
 cask "tor-browser"
 # Open-source BitTorrent client
@@ -562,21 +566,31 @@ mas "HP", id: 1474276998
 mas "HP Easy Scan", id: 967004861
 mas "Image2Icon", id: 992115977
 mas "iMovie", id: 408981434
+mas "Keynote", id: 361285480
 mas "Keynote", id: 409183694
 mas "LimeChat", id: 414030210
 mas "Magnet", id: 441258766
 mas "Numbers", id: 409203825
+mas "Numbers", id: 361304891
+mas "OneDrive", id: 823766827
+mas "Pages", id: 361309726
 mas "Pages", id: 409201541
 mas "PhotoMiner", id: 1227312629
+mas "Slack", id: 803453959
 mas "Sleep Alarm Clock", id: 1091149644
 mas "Smart Converter", id: 447513724
 mas "Speedtest", id: 1153157709
+mas "SwiftyMenu", id: 1567748223
+mas "Tailscale", id: 1475387142
 mas "Telegram", id: 747648890
 mas "Transporter", id: 1450874784
 mas "Web eID", id: 1576665083
 mas "WhatFont", id: 1437138382
+mas "WhatsApp", id: 310633997
+mas "Windows App", id: 1295203466
 vscode "anthropic.claude-code"
 vscode "ms-azuretools.vscode-containers"
 vscode "ms-vscode-remote.remote-containers"
+npm "ajv-cli"
 npm "nvm"
 npm "openclaw"
