@@ -49,7 +49,7 @@ main() {
   sudoers
   brew_install
   . "${SHRC}/profile"
-  brew bundle install --no-lock --cleanup
+  brew bundle install --cleanup
   profile
   icloud
   generate_aliases

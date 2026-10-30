@@ -56,6 +56,20 @@ addmanpath() {
       export MANPATH="${arg}"
     fi
   done
+  # Añadir ":" al final de MANPATH si no existe
+  if [ -n "${MANPATH-}" ]; then
+  # Verificar si termina con ":"
+  case "${MANPATH}" in
+    *:)
+      # Ya termina con ":"
+      ;;
+    *)
+      # No termina con ":", añadirlo
+      MANPATH="${MANPATH}:"
+      export MANPATH
+      ;;
+  esac
+fi
 }
 
 #######################################

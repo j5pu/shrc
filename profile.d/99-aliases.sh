@@ -4,21 +4,18 @@
 ! test -f "${HOMEBREW_PREFIX}/etc/grc.sh" || GRC_ALIASES=true . "${HOMEBREW_PREFIX}/etc/grc.sh"
 
 alias atlasip='atlas accessLists create $(mydigip)/32'
-alias bbb=" brew update && \
-  brew upgrade && \
-  brew cu -f --yes --cleanup --include-mas && \
-  brew cleanup && \
-  brew autoremove && \
+alias bb='bbup && \
   brew bundle dump --force --describe && \
-  brew bundle install --no-lock --cleanup && \
+  brew bundle install --cleanup && \
+  brew cleanup --prune=all'
+alias bbc="bbup && \
+  brew bundle install --cleanup && \
+  brew bundle dump --force --describe && \
   brew cleanup --prune=all"
-alias bbc=" brew update && \
-  brew upgrade && \
-  brew cu -f --yes --cleanup --include-mas && \
-  brew cleanup && \
+alias bbup="brew update && \
+  brew upgrade --force --greedy-auto-updates && \
+  brew cu --yes --all --cleanup --include-mas && \
   brew autoremove && \
-  brew bundle install --no-lock --cleanup && \
-  brew bundle dump --force --describe && \
   brew cleanup --prune=all"
 if cmd docker; then
   alias ddisk="docker system df"
@@ -100,9 +97,9 @@ Support/lsregister -u /Applications/Spotify.app 2>/dev/null || true"
   alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
   alias timemachine_excluded="mdfind \"com_apple_backup_excludeItem = 'com.apple.backupd'\""
   alias timemachine_remove_excluded="tmutil removeexclusion"
-  alias update="apt update"
+  alias update="softwareupdate -aiR" # Install all macOS updates and restart system
 else
   alias apt-all="apt update -y; apt upgrade -y; apt dist-upgrade -y; apt autoremove -y; apt autoclean -y"
   alias networking="sudo /etc/init.d/networking"
-  alias update="softwareupdate -aiR" # Install all macOS updates and restart system
+  alias update="apt update"
 fi
